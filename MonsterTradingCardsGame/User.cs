@@ -16,6 +16,7 @@ namespace MonsterTradingCardsGame
 
         protected int _id = -1;
         protected string _username;
+     //   public string UserName { get; set; }
         protected string _password;
         protected int _coins = 20;
 
