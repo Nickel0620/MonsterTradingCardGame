@@ -59,3 +59,11 @@ while (true)
 
 //server und client in eigene klassen aufteilen
 //request parser auch eigene klasse???
+//HTTP server  POST http://localhost:10001/users //CURL von moodle
+
+//.yaml --> swagger editor zum lesen
+
+//Server ist single threaded, multithread einbauen
+
+
+//REST verwendet Token zur authentification
