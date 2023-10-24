@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.cards
 {
     internal class Monster : Cards
     {

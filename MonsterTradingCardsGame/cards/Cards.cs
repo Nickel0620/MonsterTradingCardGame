@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.cards
 {
     internal abstract class Cards
     {
@@ -15,7 +15,7 @@ namespace MonsterTradingCardsGame
 
         protected Cards(string name, string type, string element, int dmg)
         {
-        
+
             _cardName = name;
             _cardType = type;
             _damage = dmg;
