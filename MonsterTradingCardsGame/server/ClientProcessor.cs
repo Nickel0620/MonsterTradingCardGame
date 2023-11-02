@@ -25,7 +25,9 @@ namespace MonsterTradingCardsGame.server
 
             // ----- 2. Do the processing -----
             HTTPResponse response = new HTTPResponse(writer);
-            if(request.Path == "/Users")
+            //Hier müssen die einzelnen Endpunkte eingebaut werden
+            // /users --> weil es im curl script so definiert ist, http://localhost:10001/users 
+            if (request.Path == "/users")
             {
                 response.Content = "Users created";
             }   else
@@ -33,6 +35,7 @@ namespace MonsterTradingCardsGame.server
                 response.ResponseCode = 401;
                 response.ResponseMessage = "Not Found";
             }
+            
             //if else if else ....
             // .... 
 
