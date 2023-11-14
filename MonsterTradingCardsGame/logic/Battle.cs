@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.logic
 {
     internal class Battle
     {

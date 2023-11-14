@@ -6,9 +6,7 @@ using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-
-
-namespace MonsterTradingCardsGame
+namespace MonsterTradingCardsGame.user
 {
     internal class User
     {
@@ -16,15 +14,15 @@ namespace MonsterTradingCardsGame
 
         protected int _id = -1;
         protected string _username;
-     //   public string UserName { get; set; }
+        //   public string UserName { get; set; }
         protected string _password;
         protected int _coins = 20;
 
         protected Vector2 _stack = new Vector2();
-  
-      //  protected <type>[] deck = {"cards1-4"}; --> container klasse ist besser
 
-        
+        //  protected <type>[] deck = {"cards1-4"}; --> container klasse ist besser
+
+
         public User(string name, string password)
         {
             //if (name == usernameDB) { console.writeline username already exists) else{
