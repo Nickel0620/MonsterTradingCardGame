@@ -8,46 +8,39 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.server
 {
-    internal class HTTPServer
+    public class HttpServer
     {
-        public IPAddress Adress { get; set; }
-        public int Port { get; set; }
+        private readonly int port = 8000;
+        private readonly IPAddress ip = IPAddress.Loopback;
 
-        public HTTPServer(IPAddress adress, int port)
+        private TcpListener tcpListener;
+        public Dictionary<string, IHttpEndpoint> Endpoints { get; private set; } = new Dictionary<string, IHttpEndpoint>();
+
+
+        public HttpServer(IPAddress ip, int port)
         {
-            Adress = adress;
-            Port = port;
+            this.port = port;
+            this.ip = ip;
+
+            tcpListener = new TcpListener(ip, port);
         }
 
-        public void RunServer()
+        public void Run()
         {
-            // ===== I. Start the HTTP-Server =====
-            var httpServer = new TcpListener(Adress, Port);
-            httpServer.Start();
-
+            tcpListener.Start();
             while (true)
             {
-                var clientSocket = httpServer.AcceptTcpClient();
-
-                ClientProcessor clientProcessor = new ClientProcessor(clientSocket);
-                clientProcessor.ProcessClient();
+                // ----- 0. Accept the TCP-Client and create the reader and writer -----
+                var clientSocket = tcpListener.AcceptTcpClient();
+                var httpProcessor = new HttpProcessor(this, clientSocket);
+                // Use ThreadPool to make it multi-threaded
+                ThreadPool.QueueUserWorkItem(o => httpProcessor.Process());
             }
-
-
-
-
-
-            //server und client in eigene klassen aufteilen
-            //request parser auch eigene klasse???
-            //HTTP server  POST http://localhost:10001/users //CURL von moodle
-
-            //.yaml --> swagger editor zum lesen
-
-            //Server ist single threaded, multithread einbauen
-
-
-            //REST verwendet Token zur authentification
-
+        }
+        //path -> url végzödés local host után. pl: http://localhost:10001/users
+        public void RegisterEndpoint(string path, IHttpEndpoint endpoint)
+        {
+            Endpoints.Add(path, endpoint);
         }
     }
 }

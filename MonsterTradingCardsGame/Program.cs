@@ -1,14 +1,11 @@
-﻿using MonsterTradingCardsGame.server;
+﻿using MonsterTradingCardsGame;
+using MonsterTradingCardsGame.server;
+using MonsterTradingCardsGame.Endpoints;
+using System.Net;
 
-namespace MonsterTradingCardsGame
+Console.WriteLine("Our first simple HTTP-Server: http://localhost:10001/");
 
-{
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            HTTPServer server = new HTTPServer(System.Net.IPAddress.Any, 10001);
-            server.RunServer();
-        }
-    }
-}
+// ===== I. Start the HTTP-Server =====
+HttpServer httpServer = new HttpServer(IPAddress.Any, 10001);
+httpServer.RegisterEndpoint("users", new UsersEndpoint());
+httpServer.Run();
