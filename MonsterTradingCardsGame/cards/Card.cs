@@ -25,5 +25,12 @@ namespace MonsterTradingCardsGame.cards
             Id = id;
             Damage = dmg;
         }
+
+
+        public string CardInfo()
+        {
+            return $"[{Type}] {CardName} (ID: {Id}, Damage: {Damage})";
+        }
     }
+
 }

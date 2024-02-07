@@ -8,7 +8,7 @@ namespace MonsterTradingCardsGame.user
 {
     public class UserManager
     {
-        private List<User> users;
+        public List<User> users;
 
         public UserManager()
         {
@@ -28,7 +28,7 @@ namespace MonsterTradingCardsGame.user
             int id = users.Count + 1;
 
             // Create a new user
-            User newUser = new User(id, 1000, 0, name, password); // Assuming initial Elo and Coins values
+            User newUser = new User("", "", 100, 20, name, password); // Assuming initial Elo and Coins values
 
             // Add the user to the list of users
             users.Add(newUser);
@@ -39,7 +39,7 @@ namespace MonsterTradingCardsGame.user
         public void Login(string name, string password)
         {
             // Find the user with the specified username
-            User user = users.Find(u => u.Name == name);
+            User user = users.Find(u => u.Username == name);
 
             // Check if the user exists
             if (user != null)
@@ -64,7 +64,7 @@ namespace MonsterTradingCardsGame.user
         private bool IsUsernameTaken(string name)
         {
             // Check if the username is already in use
-            return users.Any(u => u.Name == name);
+            return users.Any(u => u.Username == name);
         }
     }
 }

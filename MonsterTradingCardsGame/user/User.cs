@@ -12,25 +12,31 @@ namespace MonsterTradingCardsGame.user
     public class User
     {
         // Properties
-        public int Id { get; set; }
+        public string Bio { get; set; }
+
+        public string Image { get; set; }
         public int Elo { get; set; }
         public int Coins { get; set; }
-        public string Name { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; } // In a real-world scenario, you would store hashed passwords.
+
+        public int gamesPlayed { get; set; }
 
         public List<Card> Stack { get; set; }
         public List<Card> Deck { get; set; }
 
         // Constructor
-        public User(int id, int elo, int coins, string name, string password)
+        public User(string bio, string image, int elo, int coins, string name, string password, int gamesPlayed)
         {
-            Id = id;
+            Bio = bio ?? "";
+            Image = image ?? "";
             Elo = elo;
             Coins = coins;
-            Name = name;
+            Username = name;
             Password = password;
             Stack = new List<Card>();
             Deck = new List<Card>();
+            this.gamesPlayed = gamesPlayed;
         }
 
 

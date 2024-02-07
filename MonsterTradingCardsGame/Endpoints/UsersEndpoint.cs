@@ -44,10 +44,42 @@ namespace MonsterTradingCardsGame.Endpoints
 
         public void GetUsers(HttpRequest rq, HttpResponse rs)
         {
-            //rq -> ami bemegy request a serverhez (böngészö) 
-            //rs -> válasz a szervertöl (cliensnek)
-            rs.Content = JsonSerializer.Serialize(new User[] { new User() { Id = 1, Elo = 100, Coins = 20, Name = "Max Muster", Password = "1234" } });
+            try
+            {
+                // Deserialize the request content to get username and password
+                var loginRequest = JsonSerializer.Deserialize<LoginRequest>(rq.Content ?? "");
+
+                // Assuming you have access to the users list and the Login logic here
+                User user = users.Find(u => u.Username == loginRequest.Username);
+
+                if (user != null && user.Password == loginRequest.Password)
+                {
+                    // Login successful, serialize and return user data
+                    rs.Content = JsonSerializer.Serialize(user);
+                    rs.ResponseCode = 200; // OK
+                    rs.ResponseMessage = "Login successful";
+                }
+                else
+                {
+                    // Login failed
+                    rs.ResponseCode = 401; // Unauthorized
+                    rs.Content = "Invalid username or password";
+                }
+            }
+            catch (Exception)
+            {
+                rs.ResponseCode = 400; // Bad Request
+                rs.Content = "Failed to parse request data!";
+            }
+
             rs.Headers.Add("Content-Type", "application/json");
+        }
+
+        // Helper class to represent the login request
+        public class LoginRequest
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
         }
     }
 }
