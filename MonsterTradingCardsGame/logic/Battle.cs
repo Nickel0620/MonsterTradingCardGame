@@ -135,7 +135,7 @@ namespace MonsterTradingCardsGame.logic
             winner.Deck.Add(card);
         }
         /// <summary>
-        /// /////////////////////////////////////////////////////////////////////////////////
+
         /// </summary>
         /// <param name="card1"></param>
         /// <param name="card2"></param>

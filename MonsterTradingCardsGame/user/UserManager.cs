@@ -13,12 +13,13 @@ namespace MonsterTradingCardsGame.user
         public UserManager()
         {
             users = new List<User>();
+
         }
 
-        public void Register(string name, string password)
+        public void Register(string username, string name, string password)
         {
             // Check if the username is already taken
-            if (IsUsernameTaken(name))
+            if (IsUsernameTaken(username))
             {
                 Console.WriteLine("Username is already taken. Please choose a different username.");
                 return;
@@ -28,7 +29,7 @@ namespace MonsterTradingCardsGame.user
             int id = users.Count + 1;
 
             // Create a new user
-            User newUser = new User("", "", 100, 20, name, password); // Assuming initial Elo and Coins values
+            User newUser = new User("", "", 100, 20, username, name, password, 0); // Assuming initial Elo and Coins values
 
             // Add the user to the list of users
             users.Add(newUser);
@@ -36,10 +37,12 @@ namespace MonsterTradingCardsGame.user
             Console.WriteLine("Registration successful!");
         }
 
-        public void Login(string name, string password)
+
+
+        public void Login(string username, string password)
         {
             // Find the user with the specified username
-            User user = users.Find(u => u.Username == name);
+            User user = users.Find(u => u.Username == username);
 
             // Check if the user exists
             if (user != null)
@@ -61,10 +64,15 @@ namespace MonsterTradingCardsGame.user
             }
         }
 
-        private bool IsUsernameTaken(string name)
+        public User ValidateUserLogin(string username, string password)
+        {
+            return users.Find(u => u.Username == username && u.Password == password);
+        }
+
+        private bool IsUsernameTaken(string username)
         {
             // Check if the username is already in use
-            return users.Any(u => u.Username == name);
+            return users.Any(u => u.Username == username);
         }
     }
 }

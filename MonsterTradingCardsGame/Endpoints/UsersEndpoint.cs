@@ -7,7 +7,13 @@ namespace MonsterTradingCardsGame.Endpoints
 {
     public class UsersEndpoint : IHttpEndpoint
     {
-        //user manager = new UserManager();
+        private UserManager userManager; // UserManager instance
+
+        public UsersEndpoint()
+        {
+            userManager = new UserManager();
+        }
+
         public bool HandleRequest(HttpRequest rq, HttpResponse rs)
         {
             if (rq.Method == HttpMethod.POST)
@@ -46,22 +52,18 @@ namespace MonsterTradingCardsGame.Endpoints
         {
             try
             {
-                // Deserialize the request content to get username and password
                 var loginRequest = JsonSerializer.Deserialize<LoginRequest>(rq.Content ?? "");
 
-                // Assuming you have access to the users list and the Login logic here
-                User user = users.Find(u => u.Username == loginRequest.Username);
+                User user = userManager.ValidateUserLogin(loginRequest.Username, loginRequest.Password);
 
-                if (user != null && user.Password == loginRequest.Password)
+                if (user != null)
                 {
-                    // Login successful, serialize and return user data
                     rs.Content = JsonSerializer.Serialize(user);
                     rs.ResponseCode = 200; // OK
                     rs.ResponseMessage = "Login successful";
                 }
                 else
                 {
-                    // Login failed
                     rs.ResponseCode = 401; // Unauthorized
                     rs.Content = "Invalid username or password";
                 }

@@ -18,6 +18,8 @@ namespace MonsterTradingCardsGame.user
         public int Elo { get; set; }
         public int Coins { get; set; }
         public string Username { get; set; }
+
+        public string Name { get; set; }
         public string Password { get; set; } // In a real-world scenario, you would store hashed passwords.
 
         public int gamesPlayed { get; set; }
@@ -25,18 +27,25 @@ namespace MonsterTradingCardsGame.user
         public List<Card> Stack { get; set; }
         public List<Card> Deck { get; set; }
 
+        bool admin = false;
+
         // Constructor
-        public User(string bio, string image, int elo, int coins, string name, string password, int gamesPlayed)
+        public User(string bio, string image, int elo, int coins, string username, string name, string password, int gamesPlayed)
         {
             Bio = bio ?? "";
             Image = image ?? "";
             Elo = elo;
             Coins = coins;
-            Username = name;
+            Username = username;
+            Name = name;
             Password = password;
             Stack = new List<Card>();
             Deck = new List<Card>();
             this.gamesPlayed = gamesPlayed;
+            if (username == "admin")
+            {
+                admin = true;
+            }
         }
 
 
