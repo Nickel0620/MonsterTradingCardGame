@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.logic
@@ -109,7 +111,7 @@ namespace MonsterTradingCardsGame.logic
                 // Wizard can control Orks so they are not able to damage them
                 damage = 0;
             }
-            else if (attacker.CreatureName == "WaterSpell" && defender.CreatureName == "Knight")
+            else if (attacker.Element + attacker.CreatureName == "WaterSpell" && defender.CreatureName == "Knight")
             {
                 // The armor of Knights is so heavy that WaterSpells make them drown instantly
                 damage = int.MaxValue; // Assign a very high value to ensure defeat
@@ -119,10 +121,111 @@ namespace MonsterTradingCardsGame.logic
                 // The Kraken is immune against spells
                 damage = 0;
             }
-            else if (attacker.CreatureName == "FireElf" && defender.CreatureName == "Dragon")
+            else if (attacker.Element + attacker.CreatureName == "FireElf" && defender.CreatureName == "Dragon")
             {
                 // FireElves can evade Dragon attacks
                 damage = 0;
+            }
+
+          //  Monster Fights -WaterGoblin vs FireTroll and vice versa
+             if ((attacker.Element + attacker.CreatureName == "WaterGoblin" && defender.Element + defender.CreatureName == "FireTroll") ||
+                 (attacker.Element + attacker.CreatureName == "FireTroll" && defender.Element + defender.CreatureName == "WaterGoblin"))
+            {
+                // In both cases, the Troll defeats the Goblin
+                if (attacker.CreatureName == "Goblin")
+                {
+                    damage = 0; // Goblin loses, no damage
+                }
+                else if (attacker.CreatureName == "Troll")
+                {
+                    damage = defender.Damage + 1; // Ensure Troll's damage is always higher
+                }
+            }
+
+            // New Rule: Spell Fights
+            if (attacker.Type == "Spell" && defender.Type == "Spell")
+            {
+                int attackerMultiplier = 1;
+                int defenderMultiplier = 1;
+
+                if (attacker.Element == "Fire" && defender.Element == "Water")
+                {
+                    attackerMultiplier = 1; // FireSpell retains its damage
+                    defenderMultiplier = 2; // WaterSpell doubles its damage
+                }
+                else if (attacker.Element == "Water" && defender.Element == "Fire")
+                {
+                    attackerMultiplier = 2; // WaterSpell doubles its damage
+                    defenderMultiplier = 1; // FireSpell retains its damage
+                }
+
+                int adjustedAttackerDamage = damage * attackerMultiplier;
+                int adjustedDefenderDamage = defender.Damage * defenderMultiplier;
+
+                // Determine the outcome
+                if (adjustedAttackerDamage > adjustedDefenderDamage)
+                {
+                    damage = adjustedAttackerDamage; // Attacker wins
+                }
+                else if (adjustedAttackerDamage < adjustedDefenderDamage)
+                {
+                    damage = 0; // Attacker loses
+                }
+                else
+                {
+                    // Draw, no action
+                    damage = 0;
+                    defender.Damage = 0; // Set defender's damage to 0 to indicate a draw
+                }
+            }
+
+            // New Rule: Mixed Fights
+            if ((attacker.Type == "Spell" && defender.Type == "Monster") ||
+                (attacker.Type == "Monster" && defender.Type == "Spell"))
+            {
+                int attackerMultiplier = 1;
+                int defenderMultiplier = 1;
+
+                // Adjust multipliers based on the combination of elements and types
+                if (attacker.Element == "Fire" && defender.Element == "Water")
+                {
+                    attackerMultiplier = attacker.Type == "Spell" ? 1 : 2;
+                    defenderMultiplier = defender.Type == "Monster" ? 2 : 1;
+                }
+                else if (attacker.Element == "Water" && defender.Element == "Water")
+                {
+                    attackerMultiplier = 1;
+                    defenderMultiplier = 1; // Equal elements result in no change
+                }
+                else if (attacker.Element == "Regular" && defender.Element == "Water")
+                {
+                    attackerMultiplier = 2; // Regular spell gets a boost against Water element
+                    defenderMultiplier = attacker.Type == "Spell" ? 1 : 2;
+                }
+                else if (attacker.Element == "Regular" && defender.CreatureName == "Knight")
+                {
+                    attackerMultiplier = 1; // Regular spell against Knight
+                    defenderMultiplier = 1; // Knight retains its damage
+                }
+
+                int adjustedAttackerDamage = damage * attackerMultiplier;
+                int adjustedDefenderDamage = defender.Damage * defenderMultiplier;
+
+                // Determine the outcome
+                if (adjustedAttackerDamage > adjustedDefenderDamage)
+                {
+                    damage = adjustedAttackerDamage; // Attacker wins
+                }
+                else if (adjustedAttackerDamage < adjustedDefenderDamage)
+                {
+                    damage = 0; // Attacker loses
+                }
+                else
+                {
+                    // Draw, no action
+                    damage = 0;
+                    defender.Damage = 0; // Set defender's damage to 0 to indicate a draw
+                }
             }
 
             return damage;
@@ -132,7 +235,7 @@ namespace MonsterTradingCardsGame.logic
         {
             // Remove the card from the loser's deck and add it to the winner's deck
             loser.Deck.Remove(card);
-            winner.Deck.Add(card);
+            winner.Stack.Add(card);
         }
         /// <summary>
 

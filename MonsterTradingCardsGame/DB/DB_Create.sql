@@ -1,4 +1,4 @@
-﻿using Microsoft.Analytics.Interfaces;
+﻿/*using Microsoft.Analytics.Interfaces;
 using Microsoft.Analytics.Types.Sql;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,7 @@ namespace MonsterTradingCardsGame.DB
     {
     }
 }
+*/
 
 CREATE TABLE Users (
     UserId SERIAL PRIMARY KEY,
