@@ -15,7 +15,7 @@ namespace MonsterTradingCardsGame.cards
             Cards = GenerateCards();
         }
 
-        private List<Card> GenerateCards()
+        public List<Card> GenerateCards()
         {
             List<Card> generatedCards = new List<Card>();
             Random random = new Random();
@@ -35,14 +35,14 @@ namespace MonsterTradingCardsGame.cards
             return generatedCards;
         }
 
-        private string GetRandomCreatureName()
+        public string GetRandomCreatureName()
         {
             string[] creatureNames = { "Goblin", "Dragon", "Wizard", "Orc", "Knight", "Kraken", "Elves" };
             Random random = new Random();
             return creatureNames[random.Next(creatureNames.Length)];
         }
 
-        private string GetRandomElement()
+        public string GetRandomElement()
         {
             string[] elements = { "water", "fire", "normal" };
             Random random = new Random();

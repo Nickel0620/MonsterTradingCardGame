@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.logic
 {
-    class Battle
+    public class Battle
     {
         private User player1;
         private User player2;
@@ -39,7 +39,7 @@ namespace MonsterTradingCardsGame.logic
             PrintBattleLog();
         }
 
-        private void ConductRound()
+        public void ConductRound()
         {
             // Ensure both players have cards in their deck
             if (player1.Deck.Count == 0 || player2.Deck.Count == 0)
@@ -78,7 +78,7 @@ namespace MonsterTradingCardsGame.logic
             battleLog.Add(roundResult);
         }
 
-        private int CalculateDamage(Card attacker, Card defender)
+        public int CalculateDamage(Card attacker, Card defender)
         {
             // Start with the base damage of the attacker
             int damage = attacker.Damage;
