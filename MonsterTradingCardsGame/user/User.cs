@@ -54,7 +54,7 @@ namespace MonsterTradingCardsGame.user
             {
                 admin = true;
             }
-            ConnectAndSetupUser();
+           // ConnectAndSetupUser();
         }
 
 

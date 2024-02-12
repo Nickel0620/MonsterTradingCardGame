@@ -19,8 +19,30 @@ namespace MonsterTradingCardsGameTest
         [SetUp]
         public void Setup()
         {
-            mockPlayer1 = new Mock<User>();
-            mockPlayer2 = new Mock<User>();
+            // Define default values for User constructor parameters
+            string defaultBio = "default bio";
+            string defaultImage = "default image";
+            int defaultElo = 1000;
+            int defaultCoins = 100;
+            string defaultUsername = "user1";
+            string defaultName = "Name1";
+            string defaultPassword = "password";
+            int defaultGamesPlayed = 0;
+            int defaultGamesWon = 0;
+            int defaultGamesLost = 0;
+
+            // Create instances of User with default values
+            User player1 = new User(defaultBio, defaultImage, defaultElo, defaultCoins, defaultUsername, defaultName, defaultPassword, defaultGamesPlayed, defaultGamesWon, defaultGamesLost);
+            User player2 = new User(defaultBio, defaultImage, defaultElo, defaultCoins, defaultUsername, defaultName, defaultPassword, defaultGamesPlayed, defaultGamesWon, defaultGamesLost);
+
+            // Create mocks from the instances
+            mockPlayer1 = new Mock<User>(defaultBio, defaultImage, defaultElo, defaultCoins, defaultUsername, defaultName, defaultPassword, defaultGamesPlayed, defaultGamesWon, defaultGamesLost);
+            mockPlayer2 = new Mock<User>(defaultBio, defaultImage, defaultElo, defaultCoins, defaultUsername, defaultName, defaultPassword, defaultGamesPlayed, defaultGamesWon, defaultGamesLost);
+
+            // Setup specific behavior if needed
+            // e.g., mockPlayer1.Setup(p => p.SomeMethod()).Returns(someValue);
+
+            // Create the Battle instance with the mocks
             game = new Battle(mockPlayer1.Object, mockPlayer2.Object);
         }
 
