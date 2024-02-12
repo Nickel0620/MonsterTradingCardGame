@@ -7,30 +7,40 @@ using System.Threading.Tasks;
 namespace MonsterTradingCardsGame.cards
 {
     public class Card
+{
+    // Adding CardID property
+    public int CardID { get; private set; }
+
+    // Other properties...
+    public string Type { get; set; }
+    public string CreatureName { get; set; }
+    public string Element { get; set; }
+    public string CurlId { get; set; }
+    public double Damage { get; set; }
+    public string CardName { get; set; }
+
+    // Constructor
+    public Card(int cardId, string type, string creatureName, string element, string id, double dmg, string cardname)
     {
-        // Properties
-        public string Type { get; set; }
-        public string CreatureName { get; set; }
-        public string Element { get; set; }
-        public int Id { get; set; }
-        public int Damage { get; set; }
-        public string CardName { get { return Element + " " + CreatureName; } }
-
-        // Constructor
-        public Card(string type, string creatureName, string element, int id, int dmg)
-        {
-            Type = type;
-            CreatureName = creatureName;
-            Element = element;
-            Id = id;
-            Damage = dmg;
-        }
-
-
-        public string CardInfo()
-        {
-            return $"[{Type}] {CardName} (ID: {Id}, Damage: {Damage})";
-        }
+        CardID = cardId;
+        Type = type ?? "";
+        CreatureName = creatureName ?? "";
+        Element = element ?? "";
+        CurlId = id ?? "";
+        Damage = dmg;
+        CardName = cardname ?? "";
     }
+
+    public string CardInfo()
+    {
+        return $"[{Type}] {CardName} (ID: {CurlId}, Damage: {Damage})";
+    }
+
+    // Method to set CardID - if necessary
+    public void SetCardID(int cardId)
+    {
+        CardID = cardId;
+    }
+}
 
 }

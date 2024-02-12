@@ -54,8 +54,8 @@ namespace MonsterTradingCardsGame.logic
             Card card2 = player2.Deck[rnd.Next(player2.Deck.Count)];
 
             // Calculate damage considering element type and special rules
-            int card1Damage = CalculateDamage(card1, card2);
-            int card2Damage = CalculateDamage(card2, card1);
+            double card1Damage = CalculateDamage(card1, card2);
+            double card2Damage = CalculateDamage(card2, card1);
 
             // Determine round outcome
             string roundResult;
@@ -78,10 +78,10 @@ namespace MonsterTradingCardsGame.logic
             battleLog.Add(roundResult);
         }
 
-        public int CalculateDamage(Card attacker, Card defender)
+        public double CalculateDamage(Card attacker, Card defender)
         {
             // Start with the base damage of the attacker
-            int damage = attacker.Damage;
+            double damage = attacker.Damage;
 
             // Apply elemental effectiveness
             if (attacker.Element == "Water")
@@ -145,8 +145,8 @@ namespace MonsterTradingCardsGame.logic
             // New Rule: Spell Fights
             if (attacker.Type == "Spell" && defender.Type == "Spell")
             {
-                int attackerMultiplier = 1;
-                int defenderMultiplier = 1;
+                double attackerMultiplier = 1;
+                double defenderMultiplier = 1;
 
                 if (attacker.Element == "Fire" && defender.Element == "Water")
                 {
@@ -159,8 +159,8 @@ namespace MonsterTradingCardsGame.logic
                     defenderMultiplier = 1; // FireSpell retains its damage
                 }
 
-                int adjustedAttackerDamage = damage * attackerMultiplier;
-                int adjustedDefenderDamage = defender.Damage * defenderMultiplier;
+                double adjustedAttackerDamage = damage * attackerMultiplier;
+                double adjustedDefenderDamage = defender.Damage * defenderMultiplier;
 
                 // Determine the outcome
                 if (adjustedAttackerDamage > adjustedDefenderDamage)
@@ -183,8 +183,8 @@ namespace MonsterTradingCardsGame.logic
             if ((attacker.Type == "Spell" && defender.Type == "Monster") ||
                 (attacker.Type == "Monster" && defender.Type == "Spell"))
             {
-                int attackerMultiplier = 1;
-                int defenderMultiplier = 1;
+                double attackerMultiplier = 1;
+                double defenderMultiplier = 1;
 
                 // Adjust multipliers based on the combination of elements and types
                 if (attacker.Element == "Fire" && defender.Element == "Water")
@@ -208,8 +208,8 @@ namespace MonsterTradingCardsGame.logic
                     defenderMultiplier = 1; // Knight retains its damage
                 }
 
-                int adjustedAttackerDamage = damage * attackerMultiplier;
-                int adjustedDefenderDamage = defender.Damage * defenderMultiplier;
+                double adjustedAttackerDamage = damage * attackerMultiplier;
+                double adjustedDefenderDamage = defender.Damage * defenderMultiplier;
 
                 // Determine the outcome
                 if (adjustedAttackerDamage > adjustedDefenderDamage)
@@ -246,8 +246,8 @@ namespace MonsterTradingCardsGame.logic
         private string ResolveBattle(Card card1, Card card2)
         {
             // Calculate damage considering element type and special rules
-            int card1Damage = CalculateDamage(card1, card2);
-            int card2Damage = CalculateDamage(card2, card1);
+            double card1Damage = CalculateDamage(card1, card2);
+            double card2Damage = CalculateDamage(card2, card1);
 
             // Determine the outcome of the battle
             string roundResult;

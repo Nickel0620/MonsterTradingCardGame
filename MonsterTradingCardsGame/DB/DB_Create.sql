@@ -14,47 +14,49 @@ namespace MonsterTradingCardsGame.DB
 }
 */
 
+-- Users Table
 CREATE TABLE Users (
-    UserId SERIAL PRIMARY KEY,
+    UserID SERIAL PRIMARY KEY,
     Bio TEXT,
     Image TEXT,
     Elo INT,
     Coins INT,
-    Username TEXT UNIQUE,
-    Name TEXT,
-    Password TEXT,
+    Username VARCHAR(255) UNIQUE NOT NULL,
+    Name VARCHAR(255),
+    Password VARCHAR(255) NOT NULL, -- Ensure this is hashed in practice
     GamesPlayed INT,
+    GamesWon INT,
+    GamesLost INT,
     IsAdmin BOOLEAN DEFAULT false
 );
 
+-- Cards Table
 CREATE TABLE Cards (
-    CardId SERIAL PRIMARY KEY,
-    Type TEXT,
-    CreatureName TEXT,
-    Element TEXT,
-    Damage INT
+    CardID SERIAL PRIMARY KEY,
+    Type VARCHAR(255),
+    CreatureName VARCHAR(255),
+    Element VARCHAR(255),
+    CurlID VARCHAR(255),
+    Damage DOUBLE PRECISION,
+    CardName VARCHAR(255)
 );
 
+-- Packages Table
 CREATE TABLE Packages (
-    PackageId SERIAL PRIMARY KEY
-    -- Cards are linked through PackageCards table
+    PackageID SERIAL PRIMARY KEY,
+    CardID1 INT REFERENCES Cards(CardID),
+    CardID2 INT REFERENCES Cards(CardID),
+    CardID3 INT REFERENCES Cards(CardID),
+    CardID4 INT REFERENCES Cards(CardID),
+    CardID5 INT REFERENCES Cards(CardID)
 );
 
+-- UserCards Table
 CREATE TABLE UserCards (
-    UserCardId SERIAL PRIMARY KEY,
-    UserId INT REFERENCES Users(UserId),
-    CardId INT REFERENCES Cards(CardId),
-    AcquiredFromPackageId INT REFERENCES Packages(PackageId)
+    UserCardID SERIAL PRIMARY KEY,
+    UserID INT REFERENCES Users(UserID),
+    CardID INT REFERENCES Cards(CardID),
+    InDeck BOOLEAN DEFAULT false
 );
 
-CREATE TABLE UserDeck (
-    UserDeckId SERIAL PRIMARY KEY,
-    UserId INT REFERENCES Users(UserId),
-    CardId INT REFERENCES Cards(CardId)
-);
 
-CREATE TABLE PackageCards (
-    PackageCardId SERIAL PRIMARY KEY,
-    PackageId INT REFERENCES Packages(PackageId),
-    CardId INT REFERENCES Cards(CardId)
-);

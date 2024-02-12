@@ -28,8 +28,9 @@ namespace MonsterTradingCardsGame.user
             // Generate a unique ID for the user (you might have a more sophisticated method in a real application)
             int id = users.Count + 1;
 
-            // Create a new user
-            User newUser = new User("", "", 100, 20, username, name, password, 0); // Assuming initial Elo and Coins values
+            string hashedPassword = PasswordHasher.HashPassword(password);
+
+            User newUser = new User("", "", 100, 20, username, name, hashedPassword, 0 , 0, 0); // Use hashed password
 
             // Add the user to the list of users
             users.Add(newUser);
@@ -48,7 +49,7 @@ namespace MonsterTradingCardsGame.user
             if (user != null)
             {
                 // Check if the entered password matches the stored password (in a real-world scenario, compare hashed passwords)
-                if (user.Password == password)
+                if (PasswordHasher.VerifyPassword(password, user.Password))
                 {
                     Console.WriteLine("Login successful!");
                     // Perform any additional login logic if needed
