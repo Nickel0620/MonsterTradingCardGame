@@ -26,6 +26,11 @@ namespace MonsterTradingCardsGame.Endpoints
                 GetUsers(rq, rs);
                 return true;
             }
+            else if (rq.Method == HttpMethod.PUT)
+            {
+                EditUsers(rq, rs);
+                return true;
+            }
             return false;
         }
 
@@ -34,18 +39,27 @@ namespace MonsterTradingCardsGame.Endpoints
         {
             try
             {
-                var user = JsonSerializer.Deserialize<User>(rq.Content ?? "");
+                var registrationRequest = JsonSerializer.Deserialize<RegistrationRequest>(rq.Content ?? "");
 
-                // call BL
-
-                rs.ResponseCode = 201;
-                rs.ResponseMessage = "OK";
+                if (userManager.IsUsernameTaken(registrationRequest.Username))
+                {
+                    rs.ResponseCode = 409; // Conflict
+                    rs.Content = "Username is already taken. Please choose a different username.";
+                }
+                else
+                {
+                    userManager.Register(registrationRequest.Username, registrationRequest.Name, registrationRequest.Password);
+                    rs.ResponseCode = 201; // Created
+                    rs.Content = "Registration successful!";
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                rs.ResponseCode = 400;
-                rs.Content = "Failed to parse User data! ";
+                rs.ResponseCode = 400; // Bad Request
+                rs.Content = "Failed to process registration: " + ex.Message;
             }
+
+            rs.Headers.Add("Content-Type", "application/json");
         }
 
         public void GetUsers(HttpRequest rq, HttpResponse rs)
@@ -75,6 +89,19 @@ namespace MonsterTradingCardsGame.Endpoints
             }
 
             rs.Headers.Add("Content-Type", "application/json");
+        }
+
+        public void EditUsers(HttpRequest rq, HttpResponse rs)
+        {
+
+        }
+
+        //helper class to represent the registration request
+        public class RegistrationRequest
+        {
+            public string Username { get; set; }
+            public string Name { get; set; }
+            public string Password { get; set; }
         }
 
         // Helper class to represent the login request

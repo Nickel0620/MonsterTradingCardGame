@@ -111,7 +111,7 @@ namespace MonsterTradingCardsGame.logic
                 // Wizard can control Orks so they are not able to damage them
                 damage = 0;
             }
-            else if (attacker.Element + attacker.CreatureName == "WaterSpell" && defender.CreatureName == "Knight")
+            else if (attacker.Element + attacker.Type == "WaterSpell" && defender.CreatureName == "Knight")
             {
                 // The armor of Knights is so heavy that WaterSpells make them drown instantly
                 damage = int.MaxValue; // Assign a very high value to ensure defeat
@@ -121,7 +121,7 @@ namespace MonsterTradingCardsGame.logic
                 // The Kraken is immune against spells
                 damage = 0;
             }
-            else if (attacker.Element + attacker.CreatureName == "FireElf" && defender.CreatureName == "Dragon")
+            else if (attacker.CreatureName == "Dragon" && defender.Element + defender.CreatureName == "FireElf")
             {
                 // FireElves can evade Dragon attacks
                 damage = 0;
@@ -310,13 +310,17 @@ namespace MonsterTradingCardsGame.logic
             {
                 // Player 1 wins
                 player1.Elo += winEloChange;
+                player1.gamesWon++;
                 player2.Elo -= loseEloChange;
+                player2.gamesLost++;
             }
             else if (player2.Deck.Count > 0 && player1.Deck.Count == 0)
             {
                 // Player 2 wins
                 player2.Elo += winEloChange;
+                player2.gamesWon++;
                 player1.Elo -= loseEloChange;
+                player1.gamesLost++;
             }
             // In case of a draw, you might want to update the stats differently
         }
