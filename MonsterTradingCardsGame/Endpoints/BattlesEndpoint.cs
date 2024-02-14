@@ -1,4 +1,7 @@
 ﻿using MonsterTradingCardsGame.server;
+using System.Text.Json;
+using HttpMethod = MonsterTradingCardsGame.server.HttpMethod;
+using MonsterTradingCardsGame.user;
 using System;
 using System.Collections.Generic;
 using System.Linq;

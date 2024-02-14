@@ -9,7 +9,7 @@ namespace MonsterTradingCardsGame.cards
 {
     public class CardService
     {
-        private string connectionString = "Host=myHost;Username=myUser;Password=myPassword;Database=myDatabase";
+        private string connectionString = "Host=myHost;Username=postgres;Password=postgres;Database=mtcg";
 
         public Card CreateCard(string type, string creatureName, string element, string id, double dmg, string cardname)
         {

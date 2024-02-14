@@ -34,7 +34,7 @@ namespace MonsterTradingCardsGame.user
         public bool admin = false;
 
 
-        private const string ConnectionString = "Host=myHost;Username=postgres;Password=myPassword;Database=myDatabase";
+        private const string ConnectionString = "Host=localhost:5432;Username=postgres;Password=postgres;Database=mtcg";
         // Constructor
         public User(string bio, string image, int elo, int coins, string username, string name, string password, int gamesPlayed, int gamesWon, int gamesLost)
         {
@@ -43,7 +43,7 @@ namespace MonsterTradingCardsGame.user
             Elo = elo;
             Coins = coins;
             Username = username;
-            Name = name;
+            Name = name ?? "";
             Password = password;
             Stack = new List<Card>();
             Deck = new List<Card>();
@@ -58,44 +58,47 @@ namespace MonsterTradingCardsGame.user
         }
 
 
-        private void ConnectAndSetupUser()
+        public bool SelectDeck(int userId, int[] cardIds)
         {
+            if (cardIds.Length != 4)
+            {
+                throw new ArgumentException("You must select exactly 4 cards.");
+            }
+
             using (var conn = new NpgsqlConnection(ConnectionString))
             {
                 conn.Open();
 
-                // Check if the user already exists
-                using (var checkUserCmd = new NpgsqlCommand("SELECT COUNT(*) FROM Users WHERE Username = @username", conn))
+                using (var cmd = new NpgsqlCommand())
                 {
-                    checkUserCmd.Parameters.AddWithValue("username", Username);
-                    int userExists = Convert.ToInt32(checkUserCmd.ExecuteScalar());
+                    cmd.Connection = conn;
 
-                    if (userExists == 0)
+                    // Check if the user already has a deck
+                    cmd.CommandText = "SELECT COUNT(*) FROM UserDeck WHERE UserID = @userId";
+                    cmd.Parameters.AddWithValue("userId", userId);
+
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    if (count == 0)
                     {
-                        // Insert new user since they do not exist
-                        using (var insertUserCmd = new NpgsqlCommand("INSERT INTO Users (Bio, Image, Elo, Coins, Username, Name, Password, GamesPlayed, GamesWon, GamesLost) VALUES (@bio, @image, @elo, @coins, @username, @name, @password, @gamesPlayed, @gamesWon, @gamesLost)", conn))
-                        {
-                            insertUserCmd.Parameters.AddWithValue("bio", Bio);
-                            insertUserCmd.Parameters.AddWithValue("image", Image);
-                            insertUserCmd.Parameters.AddWithValue("elo", Elo);
-                            insertUserCmd.Parameters.AddWithValue("coins", Coins);
-                            insertUserCmd.Parameters.AddWithValue("username", Username);
-                            insertUserCmd.Parameters.AddWithValue("name", Name);
-                            insertUserCmd.Parameters.AddWithValue("password", Password); // Ensure this is hashed
-                            insertUserCmd.Parameters.AddWithValue("gamesPlayed", gamesPlayed);
-                            insertUserCmd.Parameters.AddWithValue("gamesWon", gamesWon);
-                            insertUserCmd.Parameters.AddWithValue("gamesLost", gamesLost);
-
-                            insertUserCmd.ExecuteNonQuery();
-                        }
+                        // Insert new deck
+                        cmd.CommandText = "INSERT INTO UserDeck (UserID, Card1, Card2, Card3, Card4) VALUES (@userId, @card1, @card2, @card3, @card4)";
                     }
                     else
                     {
-                        Console.WriteLine("User already exists.");
+                        // Update existing deck
+                        cmd.CommandText = "UPDATE UserDeck SET Card1 = @card1, Card2 = @card2, Card3 = @card3, Card4 = @card4 WHERE UserID = @userId";
                     }
+
+                    cmd.Parameters.AddWithValue("card1", cardIds[0]);
+                    cmd.Parameters.AddWithValue("card2", cardIds[1]);
+                    cmd.Parameters.AddWithValue("card3", cardIds[2]);
+                    cmd.Parameters.AddWithValue("card4", cardIds[3]);
+
+                    cmd.ExecuteNonQuery();
                 }
 
-                conn.Close();
+                return true;
             }
         }
 

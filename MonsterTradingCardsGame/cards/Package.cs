@@ -9,7 +9,7 @@ namespace MonsterTradingCardsGame.cards
 {
     public class Package
     {
-        private string connectionString = "Host=myHost;Username=myUser;Password=myPassword;Database=myDatabase";
+        private string connectionString = "Host=localhost:5432;Username=postgres;Password=postgres;Database=mtcg";
 
         public List<Card> Cards { get; set; }
 

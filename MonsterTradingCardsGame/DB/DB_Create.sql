@@ -59,4 +59,15 @@ CREATE TABLE UserCards (
     InDeck BOOLEAN DEFAULT false
 );
 
+--UserDeck Table
+CREATE TABLE UserDeck (
+    UserDeckID SERIAL PRIMARY KEY,
+    UserID INT REFERENCES Users(UserID),
+    Card1 INT REFERENCES UserCards(UserCardID),
+    Card2 INT REFERENCES UserCards(UserCardID),
+    Card3 INT REFERENCES UserCards(UserCardID),
+    Card4 INT REFERENCES UserCards(UserCardID),
+    UNIQUE(UserID)
+);
+
 

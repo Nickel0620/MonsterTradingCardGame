@@ -10,7 +10,7 @@ namespace MonsterTradingCardsGame.user
     public class UserManager
     {
 
-        private const string ConnectionString = "Host=myHost;Username=postgres;Password=postgres;Database=mtcg";
+        private const string ConnectionString = "Host=localhost:5432;Username=postgres;Password=postgres;Database=mtcg";
 
 
         public List<User> users;

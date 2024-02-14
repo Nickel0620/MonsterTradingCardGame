@@ -2,6 +2,12 @@
 using MonsterTradingCardsGame.server;
 using HttpMethod = MonsterTradingCardsGame.server.HttpMethod;
 using MonsterTradingCardsGame.user;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 
 namespace MonsterTradingCardsGame.Endpoints
 {
@@ -40,7 +46,8 @@ namespace MonsterTradingCardsGame.Endpoints
             try
             {
                 var registrationRequest = JsonSerializer.Deserialize<RegistrationRequest>(rq.Content ?? "");
-
+                var AuthHeader = rq.Headers["Authorization"];
+               
                 if (userManager.IsUsernameTaken(registrationRequest.Username))
                 {
                     rs.ResponseCode = 409; // Conflict
