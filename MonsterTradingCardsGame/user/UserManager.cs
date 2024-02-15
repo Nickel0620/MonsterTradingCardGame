@@ -85,30 +85,19 @@ namespace MonsterTradingCardsGame.user
 
 
 
-        public void Login(string username, string password)
+        public User Login(string username, string password)
         {
             User user = GetUserFromDatabase(username);
 
-            // Check if the user exists
-            if (user != null)
+            if (user != null && PasswordHasher.VerifyPassword(password, user.Password))
             {
-                // Check if the entered password matches the stored password
-                // Assume PasswordHasher.VerifyPassword method exists and compares hashed passwords
-                if (PasswordHasher.VerifyPassword(password, user.Password))
-                {
-                    Console.WriteLine("Login successful!");
-                    // Perform any additional login logic if needed
-                }
-                else
-                {
-                    Console.WriteLine("Incorrect password. Please try again.");
-                }
+                // Additional login logic if needed
+                return user; // Return the User object
             }
-            else
-            {
-                Console.WriteLine("User not found. Please check your username or register a new account.");
-            }
+
+            return null; // Return null if login is unsuccessful
         }
+
 
         private User GetUserFromDatabase(string username)
         {

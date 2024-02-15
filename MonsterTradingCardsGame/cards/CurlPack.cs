@@ -1,11 +1,12 @@
-﻿/*using MonsterTradingCardsGame.user;
+﻿using MonsterTradingCardsGame.user;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Npgsql;
+using System.Data;
 
 namespace MonsterTradingCardsGame.cards
 {
@@ -13,86 +14,107 @@ namespace MonsterTradingCardsGame.cards
     {
         public class CurlPack
         {
-            public List<Card> Cards { get; private set; }
+            private string connectionString = "Host=localhost:5432;Username=postgres;Password=postgres;Database=mtcg";
 
-            public CurlPack(string json)
+            public List<Card> CreatePackage(List<CardInput> cardInputs)
             {
-                Cards = new List<Card>();
-                ParseJson(json);
+                var cards = new List<Card>();
+
+                foreach (var input in cardInputs)
+                {
+                    (string type, string element, string creatureName) = DetermineCardAttributes(input.Name);
+
+                    var card = new Card(
+                        input.CardID,
+                        type,
+                        creatureName,
+                        element,
+                        input.CurlId ?? "",
+                        input.Damage,
+                        input.Name
+                    );
+                    cards.Add(card);
+                    AddPackageToDatabase(cards);
+                }
+
+                return cards;
             }
 
-            private void ParseJson(string jsonData)
+            private (string type, string element, string creatureName) DetermineCardAttributes(string name)
             {
-                // Assuming JSON data is in the format you provided
-                var cardData = JsonConvert.DeserializeObject<List<dynamic>>(jsonData);
-                foreach (var item in cardData)
+                string type, element, creatureName;
+
+                switch (name)
                 {
-                    string id = item.Id;
-                    string name = item.Name;
-                    double damage = item.Damage;
-                    
+                    case "Dragon":
+                    case "Kraken":
+                    case "Ork":
+                    case "Knight":
+                        type = "monster";
+                        element = "normal";
+                        creatureName = name;
+                        break;
+                    case "WaterGoblin":
+                        type = "monster";
+                        element = "water";
+                        creatureName = "Goblin";
+                        break;
+                    case "FireElf":
+                        type = "monster";
+                        element = "fire";
+                        creatureName = "Elf";
+                        break;
+                    case "FireSpell":
+                    case "WaterSpell":
+                    case "RegularSpell":
+                        type = "spell";
+                        element = name.StartsWith("Water") ? "water" : (name.StartsWith("Fire") ? "fire" : "normal");
+                        creatureName = "Spell";
+                        break;
+                    default:
+                        type = "unknown";
+                        element = "unknown";
+                        creatureName = "unknown";
+                        break;
+                }
 
-                    if(name == "Dragon" || name == "Kraken" || name == "Ork" || name == "Knight")
+                return (type, element, creatureName);
+            }
+
+            private void AddPackageToDatabase(List<Card> cards)
+            {
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (var command = new NpgsqlCommand())
                     {
-                        string type = "monster";
-                        string element = "normal";
-                        string creatureName = name;
-                    } else if (name == "WaterGoblin")
-                    {
-                        string type = "monster";
-                        string element = "water";
-                        string creatureName = "Goblin";
-                    } else if (name == "FireElf")
-                    {
-                        string type = "monster";
-                        string element = "fire";
-                        string creatureName = "Elf";
-                    } else if (name == "FireSpell")
-                    {
-                        string type = "spell";
-                        string element = "fire";
-                        string creatureName = "Spell";
-                    } else if (name == "WaterSpell")
-                    {
-                        string type = "spell";
-                        string element = "water";
-                        string creatureName = "Spell";
-                    } else if (name == "RegularSpell")
-                    {
-                        string type = "spell";
-                        string element = "normal";
-                        string creatureName = "Spell";
+                        command.Connection = connection;
+                        command.CommandType = CommandType.Text;
+
+                        // Assuming you want to insert the first 5 cards into the package.
+                        // Modify as needed for your logic.
+                        command.CommandText = "INSERT INTO Packages (CardID1, CardID2, CardID3, CardID4, CardID5) VALUES (@card1, @card2, @card3, @card4, @card5)";
+                        command.Parameters.AddWithValue("@card1", cards[0].CardID);
+                        command.Parameters.AddWithValue("@card2", cards[1].CardID);
+                        command.Parameters.AddWithValue("@card3", cards[2].CardID);
+                        command.Parameters.AddWithValue("@card4", cards[3].CardID);
+                        command.Parameters.AddWithValue("@card5", cards[4].CardID);
+
+                        command.ExecuteNonQuery();
                     }
-
-                    
-                    Card card = new Card(type, element, creatureName, id, (double)damage, name);
-                    Cards.Add(card);
                 }
             }
 
-            public void SaveToDatabase(string connectionString)
+            public class CardInput
             {
-                using (var conn = new NpgsqlConnection(connectionString))
-                {
-                    conn.Open();
-
-                    foreach (var card in Cards)
-                    {
-                        var cmd = new NpgsqlCommand("INSERT INTO cards (type, creature_name, element, curl_id, damage, card_name) VALUES (@type, @creature_name, @element, @curl_id, @damage, @card_name)", conn);
-                        cmd.Parameters.AddWithValue("type", card.Type);
-                        cmd.Parameters.AddWithValue("creature_name", card.CreatureName);
-                        cmd.Parameters.AddWithValue("element", card.Element);
-                        cmd.Parameters.AddWithValue("curl_id", card.CurlId);
-                        cmd.Parameters.AddWithValue("damage", card.Damage);
-                        cmd.Parameters.AddWithValue("card_name", card.CardName);
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    conn.Close();
-                }
+                public int CardID { get; set; }
+                public string? Name { get; set; } // Full name from JSON
+                public string? CurlId { get; set; }
+                public double Damage { get; set; }
+                public string? CardName { get; set; }
             }
         }
     }
 }
 
-*/

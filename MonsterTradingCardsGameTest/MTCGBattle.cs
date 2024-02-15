@@ -10,7 +10,7 @@ using MonsterTradingCardsGame.user;
 
 namespace MonsterTradingCardsGameTest
 {
-    public class MTCGTests
+    public class MTCGBattle
     {
         private Mock<User> mockPlayer1;
         private Mock<User> mockPlayer2;

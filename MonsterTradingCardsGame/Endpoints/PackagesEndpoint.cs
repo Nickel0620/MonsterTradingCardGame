@@ -8,46 +8,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MonsterTradingCardsGame.cards.MonsterTradingCardsGame.cards.CurlPack;
+using MonsterTradingCardsGame.cards.MonsterTradingCardsGame.cards;
 
 namespace MonsterTradingCardsGame.Endpoints
 {
     internal class PackagesEndpoint : IHttpEndpoint
     {
+
+
         public bool HandleRequest(HttpRequest rq, HttpResponse rs) {
             if (rq.Method == HttpMethod.POST)
             {
-                CreatePackage(rq, rs);
+                CreateNewPackage(rq, rs);
                 return true;
             }
             return false;
         }
 
-        public void CreatePackage(HttpRequest rq, HttpResponse rs)
+        public void CreateNewPackage(HttpRequest rq, HttpResponse rs)
         {
             string username = null;
           
             try
             {
-                var packageCreatinRequest = JsonSerializer.Deserialize<List<PackageItem>>(rq.Content ?? "");
+                var cardInputs = JsonSerializer.Deserialize<List<CardInput>>(rq.Content ?? "");
                 var AuthHeader = rq.Headers["Authorization"];
 
                 if (AuthHeader != null)
                 {
                     username = AuthHeader.Replace("Bearer", "").Replace("-mtcgToken", "");
                 }
-                // Authentication and Authorization logic here
-                // Ensure that the user is authenticated and authorized to create packages
-                // ...
+                // Authentication and Authorization logic here...
+
                 if (username == "admin")
                 {
-                    bool packageCreatedSuccessfully = true;
-                    foreach (var item in packageCreatinRequest)
-                    {
-                        // Logic to add each item in the package to the database
-                        //packagemanager:
-                    }
+                    // Create an instance of CurlPack
+                    var curlPack = new CurlPack();
 
-                    if (packageCreatedSuccessfully)
+                    // Process the request
+                    var cards = curlPack.CreatePackage(cardInputs);
+
+                    // Assuming the package creation is successful if cards are returned
+                    if (cards.Count > 0)
                     {
                         rs.ResponseCode = 201; // Created
                         rs.Content = "Package creation successful!";
@@ -58,11 +61,11 @@ namespace MonsterTradingCardsGame.Endpoints
                         rs.Content = "Failed to create package.";
                     }
                 }
-                    else
+                else
                 {
-                        rs.ResponseCode = 403; // Forbidden
-                        rs.Content = "You are not authorized to create packages.";
-                    }
+                    rs.ResponseCode = 403; // Forbidden
+                    rs.Content = "You are not authorized to create packages.";
+                }
             }
             catch (Exception ex)
             {
