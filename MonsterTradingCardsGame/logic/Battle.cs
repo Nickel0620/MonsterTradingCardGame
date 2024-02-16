@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Npgsql;
 
 namespace MonsterTradingCardsGame.logic
 {
@@ -17,12 +18,126 @@ namespace MonsterTradingCardsGame.logic
         private User player2;
         private const int MaxRounds = 100;
         private List<string> battleLog;
+        private User object1;
+        private User object2;
+        private const string ConnectionString = "Host=localhost:5432;Username=postgres;Password=postgres;Database=mtcg";
 
-        public Battle(User player1, User player2)
+        public Battle(string player1Username, string player2Username)
         {
-            this.player1 = player1;
-            this.player2 = player2;
+            int player1Id = GetUserIdByUsername(player1Username);
+            int player2Id = GetUserIdByUsername(player2Username);
+
+            player1 = GetUserAndDeck(player1Id);
+            player2 = GetUserAndDeck(player2Id);
             battleLog = new List<string>();
+        }
+
+        //for testing 
+        public Battle(User object1, User object2)
+        {
+            this.object1 = object1;
+            this.object2 = object2;
+        }
+
+        private int GetUserIdByUsername(string username)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand("SELECT UserID FROM Users WHERE Username = @Username", conn))
+                {
+                    cmd.Parameters.AddWithValue("@Username", username);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return reader.GetInt32(reader.GetOrdinal("UserID"));
+                        }
+                        else
+                        {
+                            throw new Exception("User not found");
+                        }
+                    }
+                }
+            }
+        }
+
+        private User GetUserAndDeck(int userId)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                // Fetch user details
+                using (var cmd = new NpgsqlCommand("SELECT * FROM Users WHERE UserID = @UserId", conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            User user = new User(
+                                reader["Bio"] as string,
+                                reader["Image"] as string,
+                                (int)reader["Elo"],
+                                (int)reader["Coins"],
+                                reader["Username"] as string,
+                                reader["Name"] as string,
+                                reader["Password"] as string, // Remember to handle hashed passwords
+                                (int)reader["GamesPlayed"],
+                                (int)reader["GamesWon"],
+                                (int)reader["GamesLost"]
+                            );
+
+                            // Now fetch the deck for this user
+                            user.Deck = GetDeckForUser(userId, conn);
+
+                            return user;
+                        }
+                    }
+                }
+            }
+
+            throw new Exception("User not found");
+        }
+
+        private List<Card> GetDeckForUser(int userId, NpgsqlConnection conn)
+        {
+            List<Card> deck = new List<Card>();
+
+            string query = @"SELECT UC.UserCardID, UC.Type, UC.CreatureName, UC.Element, UC.CurlId, UC.Damage, UC.CardName 
+                     FROM UserDeck UD 
+                     JOIN UserCards UC ON UC.UserCardID = UD.Card1 OR UC.UserCardID = UD.Card2 
+                                        OR UC.UserCardID = UD.Card3 OR UC.UserCardID = UD.Card4 
+                     WHERE UD.UserID = @UserId";
+
+            using (var cmd = new NpgsqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@UserId", userId);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Card card = new Card(
+                            reader.GetInt32(reader.GetOrdinal("UserCardID")),
+                            reader["Type"] as string,
+                            reader["CreatureName"] as string,
+                            reader["Element"] as string,
+                            reader["CurlId"] as string,
+                            (double)reader["Damage"],
+                            reader["CardName"] as string
+                        );
+
+                        deck.Add(card);
+                    }
+                }
+
+                return deck;
+            }
         }
 
         public void PlayGame()
@@ -233,7 +348,53 @@ namespace MonsterTradingCardsGame.logic
 
         private void TransferCard(User winner, User loser, Card card)
         {
-            // Remove the card from the loser's deck and add it to the winner's deck
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // SQL statement to remove the card from the loser's deck
+                        string removeFromLoserDeckSql = @"
+                    DELETE FROM UserDeck 
+                    USING Users 
+                    WHERE Users.Username = @LoserUsername 
+                    AND Users.UserID = UserDeck.UserID 
+                    AND (UserDeck.Card1 = @CardId OR UserDeck.Card2 = @CardId OR UserDeck.Card3 = @CardId OR UserDeck.Card4 = @CardId)";
+                        using (var cmd = new NpgsqlCommand(removeFromLoserDeckSql, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@LoserUsername", loser.Username);
+                            cmd.Parameters.AddWithValue("@CardId", card.CardID);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // SQL statement to add the card to the winner's stack
+                        // Adjust this query based on your schema for the winner's stack
+                        string addToWinnerStackSql = @"
+                    INSERT INTO UserStack (UserID, CardID) 
+                    SELECT Users.UserID, @CardId 
+                    FROM Users 
+                    WHERE Users.Username = @WinnerUsername"; // Adjust based on your schema
+                        using (var cmd = new NpgsqlCommand(addToWinnerStackSql, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@WinnerUsername", winner.Username);
+                            cmd.Parameters.AddWithValue("@CardId", card.CardID);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle any exceptions (e.g., log the error)
+                        transaction.Rollback();
+                    }
+                }
+            }
+
+            // Update the in-memory objects
             loser.Deck.Remove(card);
             winner.Stack.Add(card);
         }
@@ -298,31 +459,77 @@ namespace MonsterTradingCardsGame.logic
 
         private void UpdateStats()
         {
-            // Increment the number of games played for both users
-            player1.gamesPlayed++;
-            player2.gamesPlayed++;
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // Determine the winner and loser
+                        bool isPlayer1Winner = player1.Deck.Count > 0 && player2.Deck.Count == 0;
+                        bool isPlayer2Winner = player2.Deck.Count > 0 && player1.Deck.Count == 0;
 
-            // Determine the winner and update ELO ratings
-            // This is a simplistic ELO update logic, you might want to use a more complex formula
-            int winEloChange = 3; // The value of ELO points to be exchanged, this can be adjusted
-            int loseEloChange = 1; // The value of ELO points to be exchanged, this can be adjusted
-            if (player1.Deck.Count > 0 && player2.Deck.Count == 0)
-            {
-                // Player 1 wins
-                player1.Elo += winEloChange;
-                player1.gamesWon++;
-                player2.Elo -= loseEloChange;
-                player2.gamesLost++;
+                        // Increment the number of games played for both users
+                        player1.gamesPlayed++;
+                        player2.gamesPlayed++;
+
+                        if (isPlayer1Winner)
+                        {
+                            // Player 1 wins
+                            player1.Elo += 3;
+                            player1.gamesWon++;
+                            player2.Elo -= 1;
+                            player2.gamesLost++;
+                            player1.Coins += 1; // Add a coin to the winner
+                        }
+                        else if (isPlayer2Winner)
+                        {
+                            // Player 2 wins
+                            player2.Elo += 3;
+                            player2.gamesWon++;
+                            player1.Elo -= 1;
+                            player1.gamesLost++;
+                            player2.Coins += 1; // Add a coin to the winner
+                        }
+
+                        // Update stats for both players
+                        UpdateUserStats(conn, player1, isPlayer1Winner);
+                        UpdateUserStats(conn, player2, isPlayer2Winner);
+
+                        // Commit the transaction
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle any exceptions (e.g., log the error)
+                        transaction.Rollback();
+                        throw; // Re-throw the exception after rollback
+                    }
+                }
             }
-            else if (player2.Deck.Count > 0 && player1.Deck.Count == 0)
+        }
+
+        private void UpdateUserStats(NpgsqlConnection conn, User player, bool isWinner)
+        {
+            string sql = @"
+        UPDATE Users 
+        SET Elo = @Elo, 
+            GamesPlayed = GamesPlayed + 1, 
+            GamesWon = GamesWon + @GamesWon, 
+            GamesLost = GamesLost + @GamesLost,
+            Coins = Coins + @CoinIncrement
+        WHERE Username = @Username";
+
+            using (var cmd = new NpgsqlCommand(sql, conn))
             {
-                // Player 2 wins
-                player2.Elo += winEloChange;
-                player2.gamesWon++;
-                player1.Elo -= loseEloChange;
-                player1.gamesLost++;
+                cmd.Parameters.AddWithValue("@Elo", player.Elo);
+                cmd.Parameters.AddWithValue("@GamesWon", player.gamesWon);
+                cmd.Parameters.AddWithValue("@GamesLost", player.gamesLost);
+                cmd.Parameters.AddWithValue("@CoinIncrement", isWinner ? 1 : 0); // Increment coins by 1 for the winner
+                cmd.Parameters.AddWithValue("@Username", player.Username);
+                cmd.ExecuteNonQuery();
             }
-            // In case of a draw, you might want to update the stats differently
         }
 
         private void PrintBattleLog()

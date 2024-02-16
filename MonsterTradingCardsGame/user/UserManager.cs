@@ -99,7 +99,7 @@ namespace MonsterTradingCardsGame.user
         }
 
 
-        private User GetUserFromDatabase(string username)
+        public User GetUserFromDatabase(string username)
         {
             using (var conn = new NpgsqlConnection(ConnectionString))
             {
@@ -138,6 +138,110 @@ namespace MonsterTradingCardsGame.user
                 Convert.ToInt32(reader["GamesLost"])
             );
         }
+
+        public bool EditUser(User updatedUser)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                // SQL query to update user details
+                string query = "UPDATE Users SET Name = @Name, Bio = @Bio, Image = @Image WHERE Username = @Username";
+
+                using (var cmd = new NpgsqlCommand(query, conn))
+                {
+                    // Bind the parameters
+                    cmd.Parameters.AddWithValue("@Name", updatedUser.Name);
+                    cmd.Parameters.AddWithValue("@Bio", updatedUser.Bio);
+                    cmd.Parameters.AddWithValue("@Image", updatedUser.Image);
+                    cmd.Parameters.AddWithValue("@Username", updatedUser.Username);
+
+                    // Execute the command and check if any row is affected
+                    int affectedRows = cmd.ExecuteNonQuery();
+                    return affectedRows > 0;
+                }
+            }
+        }
+
+        public UserStatsModel UserStats(string username)
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = "SELECT GamesPlayed, GamesWon, GamesLost, Elo FROM Users WHERE Username = @Username";
+                    cmd.Parameters.AddWithValue("@Username", username);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new UserStatsModel
+                            {
+                                GamesPlayed = reader.GetInt32(reader.GetOrdinal("GamesPlayed")),
+                                GamesWon = reader.GetInt32(reader.GetOrdinal("GamesWon")),
+                                GamesLost = reader.GetInt32(reader.GetOrdinal("GamesLost")),
+                                Elo = reader.GetInt32(reader.GetOrdinal("Elo"))
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+            public class UserStatsModel
+        {
+            public int GamesPlayed { get; set; }
+            public int GamesWon { get; set; }
+            public int GamesLost { get; set; }
+            public int Elo { get; set; }
+        }
+
+
+        public string GetScores(string callingUsername)
+        {
+            StringBuilder scoreBoard = new StringBuilder();
+
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandText = "SELECT Username, Elo FROM Users ORDER BY Elo DESC";
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string username = reader.GetString(reader.GetOrdinal("Username"));
+                            int elo = reader.GetInt32(reader.GetOrdinal("Elo"));
+
+                            if (username == callingUsername)
+                            {
+                                // Highlight the calling user
+                                scoreBoard.AppendLine($"**{username} ................. {elo}**");
+                            }
+                            else
+                            {
+                                scoreBoard.AppendLine($"{username} ................. {elo}");
+                            }
+                        }
+                    }
+                }
+            }
+
+            return scoreBoard.ToString();
+        }
+
+
+
+
 
         public User ValidateUserLogin(string username, string password)
         {

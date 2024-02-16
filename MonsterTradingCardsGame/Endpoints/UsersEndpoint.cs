@@ -29,12 +29,12 @@ namespace MonsterTradingCardsGame.Endpoints
             }
             else if (rq.Method == HttpMethod.GET)
             {
-                GetUsers(rq, rs);
+                ShowUserData(rq, rs);
                 return true;
             }
             else if (rq.Method == HttpMethod.PUT)
             {
-                EditUsers(rq, rs);
+                EditUserInfo(rq, rs);
                 return true;
             }
             return false;
@@ -69,37 +69,68 @@ namespace MonsterTradingCardsGame.Endpoints
             rs.Headers.Add("Content-Type", "application/json");
         }
 
-        public void GetUsers(HttpRequest rq, HttpResponse rs)
+        public void ShowUserData(HttpRequest rq, HttpResponse rs)
         {
             try
             {
-                var loginRequest = JsonSerializer.Deserialize<LoginRequest>(rq.Content ?? "");
-
-                User user = userManager.ValidateUserLogin(loginRequest.Username, loginRequest.Password);
-
-                if (user != null)
+                string username = ExtractUsername(rq.Headers["Authorization"]);
+                if (username != null)
                 {
-                    rs.Content = JsonSerializer.Serialize(user);
-                    rs.ResponseCode = 200; // OK
-                    rs.ResponseMessage = "Login successful";
+                    var user = userManager.GetUserFromDatabase(username);
+                    if (user != null)
+                    {
+                        rs.ResponseCode = 200; // OK
+                        rs.Content = JsonSerializer.Serialize(user);
+                    }
+                    else
+                    {
+                        rs.ResponseCode = 400; // Bad Request
+                        rs.Content = "Failed to retrieve user data!";
+                    }
                 }
                 else
                 {
                     rs.ResponseCode = 401; // Unauthorized
-                    rs.Content = "Invalid username or password";
+                    rs.Content = "Unauthorized access!";
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 rs.ResponseCode = 400; // Bad Request
-                rs.Content = "Failed to parse request data!";
+                rs.Content = "Failed to process request: " + ex.Message;
             }
-
-            rs.Headers.Add("Content-Type", "application/json");
         }
 
-        public void EditUsers(HttpRequest rq, HttpResponse rs)
+        public void EditUserInfo(HttpRequest rq, HttpResponse rs)
         {
+            try
+            {
+                string username = ExtractUsername(rq.Headers["Authorization"]);
+                if (username != null)
+                {
+                    var user = JsonSerializer.Deserialize<User>(rq.Content ?? "");
+                    if (userManager.EditUser(user))
+                    {
+                        rs.ResponseCode = 200; // OK
+                        rs.Content = "User data updated successfully!";
+                    }
+                    else
+                    {
+                        rs.ResponseCode = 400; // Bad Request
+                        rs.Content = "Failed to update user data!";
+                    }
+                }
+                else
+                {
+                    rs.ResponseCode = 401; // Unauthorized
+                    rs.Content = "Unauthorized access!";
+                }
+            }
+            catch (Exception ex)
+            {
+                rs.ResponseCode = 400; // Bad Request
+                rs.Content = "Failed to process request: " + ex.Message;
+            }
 
         }
 
@@ -116,6 +147,15 @@ namespace MonsterTradingCardsGame.Endpoints
         {
             public string Username { get; set; }
             public string Password { get; set; }
+        }
+
+        private string ExtractUsername(string authHeader)
+        {
+            if (authHeader != null)
+            {
+                return authHeader.Replace("Bearer", "").Replace("-mtcgToken", "").Trim();
+            }
+            return null;
         }
     }
 }
