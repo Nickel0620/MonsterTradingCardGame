@@ -43,8 +43,8 @@ namespace MonsterTradingCardsGame.Endpoints
                     }
                     else
                     {
-                        rs.ResponseCode = 400; // Bad Request
-                        rs.Content = "Package purchase failed or insufficient coins!";
+                        rs.ResponseCode = 403; // Bad Request
+                        rs.Content = "Not enough money!";
                     }
                 }
                 else

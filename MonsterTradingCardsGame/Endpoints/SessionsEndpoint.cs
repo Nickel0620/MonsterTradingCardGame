@@ -37,24 +37,24 @@ namespace MonsterTradingCardsGame.Endpoints
             {
                 var loginRequest = JsonSerializer.Deserialize<LoginRequest>(rq.Content ?? "");
 
-                User user = userManager.Login(loginRequest.Username, loginRequest.Password);
+                bool loginSuccess = userManager.Login(loginRequest.Username, loginRequest.Password);
 
-                if (user != null)
+                if (loginSuccess)
                 {
-                    rs.Content = JsonSerializer.Serialize(user);
                     rs.ResponseCode = 200; // OK
                     rs.ResponseMessage = "Login successful";
+                    rs.Content = JsonSerializer.Serialize(new { Message = "Login successful" });
                 }
                 else
                 {
                     rs.ResponseCode = 401; // Unauthorized
-                    rs.Content = "Invalid username or password";
+                    rs.Content = JsonSerializer.Serialize(new { Error = "Invalid username or password" });
                 }
             }
             catch (Exception)
             {
                 rs.ResponseCode = 400; // Bad Request
-                rs.Content = "Failed to parse request data!";
+                rs.Content = JsonSerializer.Serialize(new { Error = "Failed to parse request data!" });
             }
 
             rs.Headers.Add("Content-Type", "application/json");

@@ -63,14 +63,7 @@ namespace MonsterTradingCardsGame.Endpoints
             return null;
         }
 
-        private string ExtractUsername(string authHeader)
-        {
-            if (authHeader != null)
-            {
-                return authHeader.Replace("Bearer", "").Replace("-mtcgToken", "").Trim();
-            }
-            return null;
-        }
+      
     }
 
 

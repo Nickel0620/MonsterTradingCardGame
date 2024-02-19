@@ -85,17 +85,42 @@ namespace MonsterTradingCardsGame.user
 
 
 
-        public User Login(string username, string password)
+        public bool Login(string username, string password)
         {
-            User user = GetUserFromDatabase(username);
-
-            if (user != null && PasswordHasher.VerifyPassword(password, user.Password))
+            using (var connection = new NpgsqlConnection(ConnectionString))
             {
-                // Additional login logic if needed
-                return user; // Return the User object
-            }
+                try
+                {
+                    connection.Open();
 
-            return null; // Return null if login is unsuccessful
+                    // Query to get the hashed password for the given username
+                    string query = "SELECT Password FROM Users WHERE Username = @username";
+
+                    using (var command = new NpgsqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@username", username);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // Retrieve the stored hashed password
+                                string storedPassword = reader["Password"].ToString();
+
+                                // Verify the provided password against the stored hashed password
+                                return PasswordHasher.VerifyPassword(password, storedPassword);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle any exceptions (e.g., logging)
+                    Console.WriteLine("An error occurred: " + ex.Message);
+                }
+
+                return false; // Return false if login is unsuccessful
+            }
         }
 
 

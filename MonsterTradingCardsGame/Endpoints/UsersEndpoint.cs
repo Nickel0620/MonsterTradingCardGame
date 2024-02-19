@@ -46,7 +46,7 @@ namespace MonsterTradingCardsGame.Endpoints
             try
             {
                 var registrationRequest = JsonSerializer.Deserialize<RegistrationRequest>(rq.Content ?? "");
-                var AuthHeader = rq.Headers["Authorization"];
+                
                
                 if (userManager.IsUsernameTaken(registrationRequest.Username))
                 {
@@ -84,8 +84,8 @@ namespace MonsterTradingCardsGame.Endpoints
                     }
                     else
                     {
-                        rs.ResponseCode = 400; // Bad Request
-                        rs.Content = "Failed to retrieve user data!";
+                        rs.ResponseCode = 404; 
+                        rs.Content = "User not Found!";
                     }
                 }
                 else
@@ -116,8 +116,8 @@ namespace MonsterTradingCardsGame.Endpoints
                     }
                     else
                     {
-                        rs.ResponseCode = 400; // Bad Request
-                        rs.Content = "Failed to update user data!";
+                        rs.ResponseCode = 404; // Bad Request
+                        rs.Content = "User not Found!";
                     }
                 }
                 else
