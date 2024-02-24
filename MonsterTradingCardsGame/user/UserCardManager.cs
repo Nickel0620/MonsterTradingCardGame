@@ -195,17 +195,23 @@ namespace MonsterTradingCardsGame.user
 
         private int GetUserCardIdByUserIdAndCurlId(NpgsqlConnection connection, int userId, string curlId)
         {
+            // Query to select the UserCardID based on the userId and curlId
             string query = @"
-                SELECT uc.UserCardID 
-                FROM UserCards uc
-                JOIN Cards c ON uc.CardID = c.CardID
-                WHERE uc.UserID = @userId AND c.CurlID = @curlId";
+        SELECT uc.UserCardID 
+        FROM UserCards uc
+        JOIN Cards c ON uc.CardID = c.CardID
+        WHERE uc.UserID = @userId AND c.CurlID = @curlId";
 
             using (var command = new NpgsqlCommand(query, connection))
             {
+                // Add parameters to avoid SQL injection
                 command.Parameters.AddWithValue("@userId", userId);
                 command.Parameters.AddWithValue("@curlId", curlId);
+
+                // Execute the command and process the result
                 object result = command.ExecuteScalar();
+
+                // If a result is found, cast it to int, otherwise return -1
                 return result != null ? (int)result : -1;
             }
         }

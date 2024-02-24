@@ -23,7 +23,7 @@ CREATE TABLE Users (
     Coins INT,
     Username VARCHAR(255) UNIQUE NOT NULL,
     Name VARCHAR(255),
-    Password VARCHAR(255) NOT NULL, -- Ensure this is hashed in practice
+    Password VARCHAR(255) NOT NULL, 
     GamesPlayed INT,
     GamesWon INT,
     GamesLost INT,
