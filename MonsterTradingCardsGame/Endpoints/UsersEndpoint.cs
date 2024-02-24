@@ -109,7 +109,7 @@ namespace MonsterTradingCardsGame.Endpoints
                 if (username != null)
                 {
                     var user = JsonSerializer.Deserialize<User>(rq.Content ?? "");
-                    if (userManager.EditUser(user))
+                    if (userManager.EditUser(user, username))
                     {
                         rs.ResponseCode = 200; // OK
                         rs.Content = "User data updated successfully!";

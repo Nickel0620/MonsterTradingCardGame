@@ -17,7 +17,7 @@ namespace MonsterTradingCardsGame.logic
         private User player1;
         private User player2;
         private const int MaxRounds = 100;
-        private List<string> battleLog;
+        private List<string> battleLog = new List<string>();        
         private User object1;
         private User object2;
         private const string ConnectionString = "Host=localhost:5432;Username=postgres;Password=postgres;Database=mtcg";
@@ -29,14 +29,29 @@ namespace MonsterTradingCardsGame.logic
 
             player1 = GetUserAndDeck(player1Id);
             player2 = GetUserAndDeck(player2Id);
-            battleLog = new List<string>();
+            
         }
 
         //for testing 
+
+        public Battle() { }
+
         public Battle(User object1, User object2)
         {
             this.object1 = object1;
             this.object2 = object2;
+        }
+
+        public void setPlayer1(string username)
+        {
+            int player1Id = GetUserIdByUsername(username);
+            player1 = GetUserAndDeck(player1Id);
+        }
+
+        public void setPlayer2(string username)
+        {
+            int player1Id = GetUserIdByUsername(username);
+            player2 = GetUserAndDeck(player1Id);
         }
 
         private int GetUserIdByUsername(string username)
@@ -69,17 +84,17 @@ namespace MonsterTradingCardsGame.logic
             using (var conn = new NpgsqlConnection(ConnectionString))
             {
                 conn.Open();
-
+                User user = null;
                 // Fetch user details
                 using (var cmd = new NpgsqlCommand("SELECT * FROM Users WHERE UserID = @UserId", conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", userId);
-
+                    
                     using (var reader = cmd.ExecuteReader())
                     {
-                        if (reader.Read())
+                        while (reader.Read())
                         {
-                            User user = new User(
+                                user = new User(
                                 reader["Bio"] as string,
                                 reader["Image"] as string,
                                 (int)reader["Elo"],
@@ -90,14 +105,18 @@ namespace MonsterTradingCardsGame.logic
                                 (int)reader["GamesPlayed"],
                                 (int)reader["GamesWon"],
                                 (int)reader["GamesLost"]
-                            );
+                            );                          
+                           
 
-                            // Now fetch the deck for this user
-                            user.Deck = GetDeckForUser(userId, conn);
-
-                            return user;
+                            
                         }
                     }
+                }
+                if (user != null)
+                {
+                    // Now fetch the deck for this user
+                    user.Deck = GetDeckForUser(userId, conn);
+                    return user;
                 }
             }
 
@@ -108,11 +127,10 @@ namespace MonsterTradingCardsGame.logic
         {
             List<Card> deck = new List<Card>();
 
-            string query = @"SELECT UC.UserCardID, UC.Type, UC.CreatureName, UC.Element, UC.CurlId, UC.Damage, UC.CardName 
-                     FROM UserDeck UD 
-                     JOIN UserCards UC ON UC.UserCardID = UD.Card1 OR UC.UserCardID = UD.Card2 
-                                        OR UC.UserCardID = UD.Card3 OR UC.UserCardID = UD.Card4 
-                     WHERE UD.UserID = @UserId";
+            string query = @"SELECT C.CardID, C.Type, C.CreatureName, C.Element, C.CurlID, C.Damage, C.CardName
+	          FROM UserDeck UD 
+              JOIN Cards C ON UD.Card1 = C.CardID OR UD.Card2 = C.CardID OR UD.Card3 = C.CardID OR UD.Card4 = C.CardID
+              WHERE UD.UserID = @UserId";
 
             using (var cmd = new NpgsqlCommand(query, conn))
             {
@@ -123,7 +141,7 @@ namespace MonsterTradingCardsGame.logic
                     while (reader.Read())
                     {
                         Card card = new Card(
-                            reader.GetInt32(reader.GetOrdinal("UserCardID")),
+                            reader.GetInt32(reader.GetOrdinal("CardID")),
                             reader["Type"] as string,
                             reader["CreatureName"] as string,
                             reader["Element"] as string,
@@ -351,35 +369,36 @@ namespace MonsterTradingCardsGame.logic
             using (var conn = new NpgsqlConnection(ConnectionString))
             {
                 conn.Open();
+                int loserId = GetUserIdByUsername(loser.Username);
+                int winnerId = GetUserIdByUsername(winner.Username);
 
                 using (var transaction = conn.BeginTransaction())
                 {
                     try
                     {
                         // SQL statement to remove the card from the loser's deck
-                        string removeFromLoserDeckSql = @"
-                    DELETE FROM UserDeck 
-                    USING Users 
-                    WHERE Users.Username = @LoserUsername 
-                    AND Users.UserID = UserDeck.UserID 
-                    AND (UserDeck.Card1 = @CardId OR UserDeck.Card2 = @CardId OR UserDeck.Card3 = @CardId OR UserDeck.Card4 = @CardId)";
-                        using (var cmd = new NpgsqlCommand(removeFromLoserDeckSql, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@LoserUsername", loser.Username);
-                            cmd.Parameters.AddWithValue("@CardId", card.CardID);
-                            cmd.ExecuteNonQuery();
-                        }
+                        //string removeFromLoserDeckSql = @"
+                    //DELETE FROM UserDeck 
+                    //USING Users 
+                    //WHERE Users.Username = @LoserUsername 
+                    //AND UserDeck.UserID =  Users.UserID
+                    //AND (UserDeck.Card1 = @CardId OR UserDeck.Card2 = @CardId OR UserDeck.Card3 = @CardId OR UserDeck.Card4 = @CardId)";
+                    //    using (var cmd = new NpgsqlCommand(removeFromLoserDeckSql, conn))
+                    //    {
+                    //        cmd.Parameters.AddWithValue("@LoserUsername", loser.Username);
+                    //        cmd.Parameters.AddWithValue("@CardId", card.CardID);
+                    //        cmd.ExecuteNonQuery();
+                    //    }
 
                         // SQL statement to add the card to the winner's stack
                         // Adjust this query based on your schema for the winner's stack
                         string addToWinnerStackSql = @"
-                    INSERT INTO UserStack (UserID, CardID) 
-                    SELECT Users.UserID, @CardId 
-                    FROM Users 
-                    WHERE Users.Username = @WinnerUsername"; // Adjust based on your schema
+                    UPDATE UserCards 
+                    SET UserId = @WinnerId  
+                    WHERE CardId = @CardId"; // Adjust based on your schema
                         using (var cmd = new NpgsqlCommand(addToWinnerStackSql, conn))
                         {
-                            cmd.Parameters.AddWithValue("@WinnerUsername", winner.Username);
+                            cmd.Parameters.AddWithValue("@WinnerId", winnerId);
                             cmd.Parameters.AddWithValue("@CardId", card.CardID);
                             cmd.ExecuteNonQuery();
                         }
@@ -392,11 +411,14 @@ namespace MonsterTradingCardsGame.logic
                         transaction.Rollback();
                     }
                 }
+               
+                loser.Deck = GetDeckForUser(loserId, conn);
             }
-
+            
+           
             // Update the in-memory objects
-            loser.Deck.Remove(card);
-            winner.Stack.Add(card);
+         //   loser.Deck.Remove(card);
+         //   winner.Stack.Add(card);
         }
         /// <summary>
 
@@ -404,58 +426,7 @@ namespace MonsterTradingCardsGame.logic
         /// <param name="card1"></param>
         /// <param name="card2"></param>
         /// <returns></returns>
-        private string ResolveBattle(Card card1, Card card2)
-        {
-            // Calculate damage considering element type and special rules
-            double card1Damage = CalculateDamage(card1, card2);
-            double card2Damage = CalculateDamage(card2, card1);
 
-            // Determine the outcome of the battle
-            string roundResult;
-            if (card1Damage > card2Damage)
-            {
-                roundResult = $"Player 1's {card1.CardName} (Damage: {card1Damage}) defeats Player 2's {card2.CardName} (Damage: {card2Damage})";
-                TransferCard(player1, player2, card2); // Transfer card2 from player2 to player1
-            }
-            else if (card2Damage > card1Damage)
-            {
-                roundResult = $"Player 2's {card2.CardName} (Damage: {card2Damage}) defeats Player 1's {card1.CardName} (Damage: {card1Damage})";
-                TransferCard(player2, player1, card1); // Transfer card1 from player1 to player2
-            }
-            else
-            {
-                roundResult = "The round is a draw.";
-            }
-
-            return roundResult;
-        }
-
-        private void UpdateDecks(Card card1, Card card2, string roundResult)
-        {
-            // Determine the winner and loser based on the round result
-            if (roundResult.Contains("defeats"))
-            {
-                User winner, loser;
-                Card cardToTransfer;
-
-                if (roundResult.Contains("Player 1's"))
-                {
-                    winner = player1;
-                    loser = player2;
-                    cardToTransfer = card2;
-                }
-                else
-                {
-                    winner = player2;
-                    loser = player1;
-                    cardToTransfer = card1;
-                }
-
-                // Perform the transfer of the card
-                TransferCard(winner, loser, cardToTransfer);
-            }
-            // In case of a draw, no action is needed
-        }
 
         private void UpdateStats()
         {

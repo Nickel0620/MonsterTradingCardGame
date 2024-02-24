@@ -164,7 +164,7 @@ namespace MonsterTradingCardsGame.user
             );
         }
 
-        public bool EditUser(User updatedUser)
+        public bool EditUser(User updatedUser, string username)
         {
             using (var conn = new NpgsqlConnection(ConnectionString))
             {
@@ -179,7 +179,7 @@ namespace MonsterTradingCardsGame.user
                     cmd.Parameters.AddWithValue("@Name", updatedUser.Name);
                     cmd.Parameters.AddWithValue("@Bio", updatedUser.Bio);
                     cmd.Parameters.AddWithValue("@Image", updatedUser.Image);
-                    cmd.Parameters.AddWithValue("@Username", updatedUser.Username);
+                    cmd.Parameters.AddWithValue("@Username", username); // Added this line
 
                     // Execute the command and check if any row is affected
                     int affectedRows = cmd.ExecuteNonQuery();

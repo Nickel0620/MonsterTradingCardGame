@@ -13,6 +13,7 @@ namespace MonsterTradingCardsGame.user
     public class User
     {
         // Properties
+
         public string Bio { get; set; }
 
         public string Image { get; set; }

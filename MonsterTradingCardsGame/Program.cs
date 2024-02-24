@@ -16,6 +16,7 @@ httpServer.RegisterEndpoint("packages", new PackagesEndpoint());
 httpServer.RegisterEndpoint("deck", new DeckEndpoint());
 httpServer.RegisterEndpoint("battles", new BattlesEndpoint());
 httpServer.RegisterEndpoint("sessions", new SessionsEndpoint());
+httpServer.RegisterEndpoint("stats", new StatsEndpoint());
 
 
 httpServer.Run();

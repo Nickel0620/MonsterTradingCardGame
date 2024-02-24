@@ -15,6 +15,7 @@ namespace MonsterTradingCardsGame.DB
 */
 
 -- Users Table
+DROP TABLE IF EXISTS Users CASCADE;
 CREATE TABLE Users (
     UserID SERIAL PRIMARY KEY,
     Bio TEXT,
@@ -31,6 +32,7 @@ CREATE TABLE Users (
 );
 
 -- Cards Table
+DROP TABLE IF EXISTS Cards CASCADE;
 CREATE TABLE Cards (
     CardID SERIAL PRIMARY KEY,
     Type VARCHAR(255),
@@ -42,6 +44,7 @@ CREATE TABLE Cards (
 );
 
 -- Packages Table
+DROP TABLE IF EXISTS Packages CASCADE;
 CREATE TABLE Packages (
     PackageID SERIAL PRIMARY KEY,
     CardID1 INT REFERENCES Cards(CardID),
@@ -52,6 +55,7 @@ CREATE TABLE Packages (
 );
 
 -- UserCards Table
+DROP TABLE IF EXISTS UserCards CASCADE;
 CREATE TABLE UserCards (
     UserCardID SERIAL PRIMARY KEY,
     UserID INT REFERENCES Users(UserID),
@@ -59,6 +63,7 @@ CREATE TABLE UserCards (
     InDeck BOOLEAN DEFAULT false
 );
 
+DROP TABLE IF EXISTS UserDeck CASCADE;
 --UserDeck Table
 CREATE TABLE UserDeck (
     UserDeckID SERIAL PRIMARY KEY,
