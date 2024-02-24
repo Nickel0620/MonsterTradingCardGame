@@ -58,7 +58,7 @@ namespace MonsterTradingCardsGame.Endpoints
         {
             if (authHeader != null)
             {
-                return authHeader.Replace("Bearer", "").Replace("-mtcgToken", "").Trim();
+                return authHeader.Replace("Bearer ", "").Replace("-mtcgToken", "").Trim();
             }
             return null;
         }

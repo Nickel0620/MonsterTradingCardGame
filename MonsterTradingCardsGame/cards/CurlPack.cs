@@ -22,22 +22,49 @@ namespace MonsterTradingCardsGame.cards
 
                 foreach (var input in cardInputs)
                 {
-                    (string type, string element, string creatureName) = DetermineCardAttributes(input.Name);
+                    (string type, string element, string creatureName) = DetermineCardAttributes(input.CardName);
 
                     var card = new Card(
-                        input.CardID,
+                        0,
                         type,
                         creatureName,
                         element,
                         input.CurlId ?? "",
                         input.Damage,
-                        input.Name
+                        input.CardName
                     );
+                    card.CardID = AddCardToDatabase(card);
                     cards.Add(card);
-                    AddPackageToDatabase(cards);
+                    
                 }
-
+                AddPackageToDatabase(cards);
                 return cards;
+            }
+
+            private int AddCardToDatabase(Card card)
+            {
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    using (var command = new NpgsqlCommand())
+                    {
+                        command.Connection = connection;
+                        command.CommandType = CommandType.Text;
+
+                        command.CommandText = "INSERT INTO Cards (Type, CreatureName, Element, CurlId, Damage, CardName) VALUES (@type, @creatureName, @element, @curlId, @damage, @cardName) RETURNING CardID;";
+                        command.Parameters.AddWithValue("@type", card.Type);
+                        command.Parameters.AddWithValue("@creatureName", card.CreatureName);
+                        command.Parameters.AddWithValue("@element", card.Element);
+                        command.Parameters.AddWithValue("@curlId", card.CurlId);
+                        command.Parameters.AddWithValue("@damage", card.Damage);
+                        command.Parameters.AddWithValue("@cardName", card.CardName);
+
+                        // Execute the query and get the CardID
+                        int cardId = (int)command.ExecuteScalar();
+                        return cardId;
+                    }
+                }
             }
 
             private (string type, string element, string creatureName) DetermineCardAttributes(string name)
@@ -108,11 +135,9 @@ namespace MonsterTradingCardsGame.cards
 
             public class CardInput
             {
-                public int CardID { get; set; }
-                public string? Name { get; set; } // Full name from JSON
+                public string? CardName { get; set; } // Full name from JSON
                 public string? CurlId { get; set; }
                 public double Damage { get; set; }
-                public string? CardName { get; set; }
             }
         }
     }

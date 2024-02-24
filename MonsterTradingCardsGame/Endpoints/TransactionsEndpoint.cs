@@ -34,18 +34,21 @@ namespace MonsterTradingCardsGame.Endpoints
 
                 if (username != null)
                 {
-                    string packageId = buyPackage.FetchFirstPackage();
+                    if (!buyPackage.HasEnoughCoins(username))
+                    {
+                        rs.ResponseCode = 403; // Forbidden
+                        rs.Content = "Not enough coins!";
+                        return; // Early return to prevent further processing
+                    }
+
+                    int packageId = buyPackage.FetchFirstPackage();
 
                     if (packageId != null && buyPackage.AssignPackageToUser(username, packageId))
                     {
                         rs.ResponseCode = 201; // Created
                         rs.Content = "Package purchase successful!";
                     }
-                    else
-                    {
-                        rs.ResponseCode = 403; // Bad Request
-                        rs.Content = "Not enough money!";
-                    }
+     
                 }
                 else
                 {
@@ -66,7 +69,7 @@ namespace MonsterTradingCardsGame.Endpoints
         {
             if (authHeader != null)
             {
-                return authHeader.Replace("Bearer", "").Replace("-mtcgToken", "").Trim();
+                return authHeader.Replace("Bearer ", "").Replace("-mtcgToken", "").Trim();
             }
             return null;
         }

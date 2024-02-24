@@ -32,12 +32,13 @@ namespace MonsterTradingCardsGame.Endpoints
           
             try
             {
-                var cardInputs = JsonSerializer.Deserialize<List<CardInput>>(rq.Content ?? "");
+                
                 var AuthHeader = rq.Headers["Authorization"];
+                var cardInputs = JsonSerializer.Deserialize<List<CardInput>>(rq.Content ?? "");
 
                 if (AuthHeader != null)
                 {
-                    username = AuthHeader.Replace("Bearer", "").Replace("-mtcgToken", "");
+                    username = AuthHeader.Replace("Bearer ", "").Replace("-mtcgToken", "");
                 }
                 // Authentication and Authorization logic here...
 
@@ -76,11 +77,6 @@ namespace MonsterTradingCardsGame.Endpoints
             rs.Headers.Add("Content-Type", "application/json");
         }
 
-        public class PackageItem
-        {
-            public Guid Id { get; set; }
-            public string Name { get; set; }
-            public double Damage { get; set; }
-        }
+       
     }
 }

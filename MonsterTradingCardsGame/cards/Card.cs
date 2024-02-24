@@ -9,7 +9,7 @@ namespace MonsterTradingCardsGame.cards
     public class Card
 {
     // Adding CardID property
-    public int CardID { get; private set; }
+    public int CardID { get; set; }
 
     // Other properties...
     public string Type { get; set; }
@@ -37,10 +37,6 @@ namespace MonsterTradingCardsGame.cards
     }
 
     // Method to set CardID - if necessary
-    public void SetCardID(int cardId)
-    {
-        CardID = cardId;
-    }
 }
 
 }
