@@ -129,6 +129,7 @@ namespace MonsterTradingCardsGame.user
                         }
                     }
                 }
+                
 
                 connection.Close();
             }
@@ -136,7 +137,67 @@ namespace MonsterTradingCardsGame.user
             return userDeck;
         }
 
-                public bool ConfigureUserDeck(string username, List<string> selectedCurlIds)
+        //diese Funktion wurde von ChatGPT anhand GetUserDeck methode angepasst damit eine schöne Tabelle gezeigt wird. 
+        public List<Card> GetUserDeckAsTableRows(string username)
+        {
+            List<Card> userDeck = new List<Card>();
+
+            using (var connection = new NpgsqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                // Get the UserID from the Users table
+                int userId = GetUserIdByUsername(connection, username);
+                if (userId == -1)
+                {
+                    // Handle case where user is not found
+                    return userDeck;
+                }
+
+                // Retrieve deck details from UserDeck table
+                string query = @"
+          SELECT c.*, uc.InDeck 
+          FROM UserDeck ud
+          JOIN UserCards uc ON uc.UserCardID = ud.Card1 OR uc.UserCardID = ud.Card2 OR uc.UserCardID = ud.Card3 OR uc.UserCardID = ud.Card4
+          JOIN Cards c ON uc.CardID = c.CardID 
+          WHERE ud.UserID = @userId";
+
+                using (var command = new NpgsqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@userId", userId);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        // Print the table header
+                        Console.WriteLine("CardID | Type | CreatureName | Element | CurlId | Damage | CardName");
+                        Console.WriteLine(new string('-', 80)); // Separator
+
+                        while (reader.Read())
+                        {
+                            int cardId = reader.GetInt32(reader.GetOrdinal("CardID"));
+                            string type = reader.GetString(reader.GetOrdinal("Type"));
+                            string creatureName = reader.GetString(reader.GetOrdinal("CreatureName"));
+                            string element = reader.GetString(reader.GetOrdinal("Element"));
+                            string curlId = reader.GetString(reader.GetOrdinal("CurlId"));
+                            double damage = reader.GetDouble(reader.GetOrdinal("Damage"));
+                            string cardName = reader.GetString(reader.GetOrdinal("CardName"));
+
+                            // Print each card as a row in the table
+                            Console.WriteLine($"{cardId} | {type} | {creatureName} | {element} | {curlId} | {damage} | {cardName}");
+
+                            Card card = new Card(cardId, type, creatureName, element, curlId, damage, cardName);
+                            userDeck.Add(card);
+                        }
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return userDeck;
+        }
+
+        public bool ConfigureUserDeck(string username, List<string> selectedCurlIds)
             {
                     if (selectedCurlIds.Count != 4)
                     {

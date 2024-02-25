@@ -32,14 +32,21 @@ namespace MonsterTradingCardsGame.Endpoints
         {
             try
             {
+                //bool hasFormatQuery = rq.QueryParams.TryGetValue("format", out string formatValue) && .... wurde mit chatGPT gemacht 
+                //hatte keine Ahnung wie ich den Teil nach deck rauslesen kann aus der URL da Path.Last() immer nur Deck zurückgibt
+                //GPT hat mir erklärt dass QueryParams die URL nach ? ausliest und Path.Last() den letzten Teil der URL ausliest aber nach ? alles "ignoriert"
+                string urlusername = rq.Path.Last();
                 string username = ExtractUsername(rq.Headers["Authorization"]);
+                bool hasFormatQuery = rq.QueryParams.TryGetValue("format", out string formatValue) &&
+                         formatValue.Equals("plain", StringComparison.OrdinalIgnoreCase);
 
-                if (username != null)
+                if (username != null && urlusername == "deck" && hasFormatQuery)
                 {
                     var user = new UserCardManager(username);
                     var deck = user.GetUserDeck(username);
-                    
-                    if (deck.Count != 4) { 
+
+                    if (deck.Count != 4)
+                    {
                         rs.ResponseCode = 204; // Bad Request
                         rs.Content = "Your deck is currently not configured!";
                         return;
@@ -53,6 +60,22 @@ namespace MonsterTradingCardsGame.Endpoints
                     {
                         rs.ResponseCode = 400; // Bad Request
                         rs.Content = "Failed to retrieve user deck!";
+                    }
+                }
+            
+                else if (username != null)
+                {
+                    var user = new UserCardManager(username);
+                    var deck = user.GetUserDeckAsTableRows(username);
+
+                    if (deck.Count <= 2) // Includes header and separator
+                    {
+                        rs.ResponseCode = 204; // No Content
+                        rs.Content = "Your deck is currently not configured!";
+                    }
+                    else
+                    {
+                        rs.ResponseCode = 200; // OK
                     }
                 }
                 else
