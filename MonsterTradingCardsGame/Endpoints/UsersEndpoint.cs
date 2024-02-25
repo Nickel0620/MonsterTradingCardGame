@@ -73,8 +73,9 @@ namespace MonsterTradingCardsGame.Endpoints
         {
             try
             {
+                string urlusername = rq.Path.Last();
                 string username = ExtractUsername(rq.Headers["Authorization"]);
-                if (username != null)
+                if (username != null && username == urlusername)
                 {
                     var user = userManager.GetUserFromDatabase(username);
                     if (user != null)
@@ -105,8 +106,9 @@ namespace MonsterTradingCardsGame.Endpoints
         {
             try
             {
+                string urlusername = rq.Path.Last();
                 string username = ExtractUsername(rq.Headers["Authorization"]);
-                if (username != null)
+                if (username != null && username == urlusername)
                 {
                     var user = JsonSerializer.Deserialize<User>(rq.Content ?? "");
                     if (userManager.EditUser(user, username))
@@ -133,6 +135,8 @@ namespace MonsterTradingCardsGame.Endpoints
             }
 
         }
+
+
 
         //helper class to represent the registration request
         public class RegistrationRequest
