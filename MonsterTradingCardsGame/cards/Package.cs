@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCardsGame.cards
 {
+    //Diese Klasse ist für die Ursprüngliche Implementierung des Kartenkaufens und generierens gedacht. 
+    //da aber CurlScript anders Funktioniert, wird diese Klasse zur Zeit nicht benötigt
+    //die Karten sollten mit dem Package ins spiel kommen und ein Package wird erstellt sobald ein User eine Packung kauft
     public class Package
     {
         private string connectionString = "Host=localhost:5432;Username=postgres;Password=postgres;Database=mtcg";

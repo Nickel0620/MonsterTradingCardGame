@@ -12,7 +12,7 @@ namespace MonsterTradingCardsGame.DB
     {
     }
 }
-*/
+
 
 -- Users Table
 DROP TABLE IF EXISTS Users CASCADE;

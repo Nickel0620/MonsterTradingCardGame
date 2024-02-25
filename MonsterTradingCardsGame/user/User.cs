@@ -55,53 +55,13 @@ namespace MonsterTradingCardsGame.user
             {
                 admin = true;
             }
-           // ConnectAndSetupUser();
+           
         }
 
 
-        public bool SelectDeck(int userId, int[] cardIds)
-        {
-            if (cardIds.Length != 4)
-            {
-                throw new ArgumentException("You must select exactly 4 cards.");
-            }
-
-            using (var conn = new NpgsqlConnection(ConnectionString))
-            {
-                conn.Open();
-
-                using (var cmd = new NpgsqlCommand())
-                {
-                    cmd.Connection = conn;
-
-                    // Check if the user already has a deck
-                    cmd.CommandText = "SELECT COUNT(*) FROM UserDeck WHERE UserID = @userId";
-                    cmd.Parameters.AddWithValue("userId", userId);
-
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
-
-                    if (count == 0)
-                    {
-                        // Insert new deck
-                        cmd.CommandText = "INSERT INTO UserDeck (UserID, Card1, Card2, Card3, Card4) VALUES (@userId, @card1, @card2, @card3, @card4)";
-                    }
-                    else
-                    {
-                        // Update existing deck
-                        cmd.CommandText = "UPDATE UserDeck SET Card1 = @card1, Card2 = @card2, Card3 = @card3, Card4 = @card4 WHERE UserID = @userId";
-                    }
-
-                    cmd.Parameters.AddWithValue("card1", cardIds[0]);
-                    cmd.Parameters.AddWithValue("card2", cardIds[1]);
-                    cmd.Parameters.AddWithValue("card3", cardIds[2]);
-                    cmd.Parameters.AddWithValue("card4", cardIds[3]);
-
-                    cmd.ExecuteNonQuery();
-                }
-
-                return true;
-            }
-        }
+        //BuyPackage Method ist für die Ursprüngliche Implementierung des Kaufens von Kartenpaketen 
+        //bzw für das Unique feature relevant. wird aber zur Zeit nicht verwendet. Deshalb habe ich es hier gelassen.  
+        //müsste nach UseCardManager verschoben werden.
 
         public bool BuyPackage()
         {
@@ -179,88 +139,7 @@ namespace MonsterTradingCardsGame.user
             }
         }
 
-        // Method to add cards from the stack to the deck
-        public void AddCardsToDeck()
-        {
-            if (Stack.Count < 4)
-            {
-                Console.WriteLine("Not enough cards in the stack to fill the deck.");
-                return;
-            }
-
-            // Display the cards in the stack
-            Console.WriteLine("Cards in the stack:");
-            for (int i = 0; i < Stack.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {Stack[i].CardInfo()}"); // Assuming CardInfo method exists
-            }
-
-            Console.WriteLine("Select 4 cards to add to the deck (enter card numbers separated by spaces):");
-            string[] selectedCardIndices = Console.ReadLine().Split(' ');
-
-            if (selectedCardIndices.Length != 4)
-            {
-                Console.WriteLine("Please select exactly 4 cards.");
-                return;
-            }
-
-            if (selectedCardIndices.All(index => int.TryParse(index, out _)))
-            {
-                List<int> indices = selectedCardIndices.Select(int.Parse).ToList();
-
-                if (indices.All(index => index >= 1 && index <= Stack.Count))
-                {
-                    Deck.Clear();
-                    List<Card> selectedCards = new List<Card>();
-                    foreach (int index in indices)
-                    {
-                        Card selectedCard = Stack[index - 1];
-                        Deck.Add(selectedCard);
-                        selectedCards.Add(selectedCard);
-                    }
-
-                    // Remove selected cards from the stack
-                    Stack.RemoveAll(card => selectedCards.Contains(card));
-
-                    // Update the InDeck status in the database
-                    UpdateCardDeckStatus(selectedCards, true);
-
-                    Console.WriteLine("Cards added to the deck successfully.");
-                }
-                else
-                {
-                    Console.WriteLine("Invalid card indices selected.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please enter valid numbers.");
-            }
-        }
-
-        private void UpdateCardDeckStatus(List<Card> cards, bool inDeck)
-        {
-            using (var connection = new NpgsqlConnection(ConnectionString))
-            {
-                connection.Open();
-
-                foreach (var card in cards)
-                {
-                    string updateSql = "UPDATE UserCards SET InDeck = @InDeck WHERE UserID = (SELECT UserID FROM Users WHERE Username = @Username) AND CardID = @CardID";
-                    using (var cmd = new NpgsqlCommand(updateSql, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@InDeck", inDeck);
-                        cmd.Parameters.AddWithValue("@Username", this.Username);
-                        cmd.Parameters.AddWithValue("@CardID", card.CardID); // Ensure CardID is correctly set
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-
-                connection.Close();
-            }
-        }
-
-
+              
     }
 
 

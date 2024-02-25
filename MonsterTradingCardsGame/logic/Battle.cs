@@ -194,17 +194,17 @@ namespace MonsterTradingCardsGame.logic
             string roundResult;
             if (card1Damage > card2Damage)
             {
-                roundResult = $"Player 1's {card1} defeats Player 2's {card2}";
+                roundResult = $"Player 1's {card1.CardName} defeats Player 2's {card2.CardName}";
                 TransferCard(player1, player2, card2); // Transfer card2 from player2 to player1
             }
             else if (card2Damage > card1Damage)
             {
-                roundResult = $"Player 2's {card2} defeats Player 1's {card1}";
+                roundResult = $"Player 2's {card2.CardName} defeats Player 1's {card1.CardName}";
                 TransferCard(player2, player1, card1); // Transfer card1 from player1 to player2
             }
             else
             {
-                roundResult = "The round is a draw.";
+                roundResult = $"The round is a draw between Player 1's {card1.CardName} and Player 2's {card2.CardName} cards";
             }
 
             // Add the round result to the battle log
@@ -376,23 +376,7 @@ namespace MonsterTradingCardsGame.logic
                 {
                     try
                     {
-                        // SQL statement to remove the card from the loser's deck
-                        //string removeFromLoserDeckSql = @"
-                    //DELETE FROM UserDeck 
-                    //USING Users 
-                    //WHERE Users.Username = @LoserUsername 
-                    //AND UserDeck.UserID =  Users.UserID
-                    //AND (UserDeck.Card1 = @CardId OR UserDeck.Card2 = @CardId OR UserDeck.Card3 = @CardId OR UserDeck.Card4 = @CardId)";
-                    //    using (var cmd = new NpgsqlCommand(removeFromLoserDeckSql, conn))
-                    //    {
-                    //        cmd.Parameters.AddWithValue("@LoserUsername", loser.Username);
-                    //        cmd.Parameters.AddWithValue("@CardId", card.CardID);
-                    //        cmd.ExecuteNonQuery();
-                    //    }
-
-                        // SQL statement to add the card to the winner's stack
-                        // Adjust this query based on your schema for the winner's stack
-                        string addToWinnerStackSql = @"
+                    string addToWinnerStackSql = @"
                     UPDATE UserCards 
                     SET UserId = @WinnerId  
                     WHERE CardId = @CardId"; // Adjust based on your schema
@@ -400,6 +384,21 @@ namespace MonsterTradingCardsGame.logic
                         {
                             cmd.Parameters.AddWithValue("@WinnerId", winnerId);
                             cmd.Parameters.AddWithValue("@CardId", card.CardID);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // SQL to remove card from loser's UserDeck
+                        string removeFromLoserDeckSql = @"
+                UPDATE UserDeck 
+                SET Card1 = CASE WHEN Card1 = @CardId THEN NULL ELSE Card1 END,
+                    Card2 = CASE WHEN Card2 = @CardId THEN NULL ELSE Card2 END,
+                    Card3 = CASE WHEN Card3 = @CardId THEN NULL ELSE Card3 END,
+                    Card4 = CASE WHEN Card4 = @CardId THEN NULL ELSE Card4 END
+                WHERE UserID = @LoserId";
+                        using (var cmd = new NpgsqlCommand(removeFromLoserDeckSql, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@CardId", card.CardID);
+                            cmd.Parameters.AddWithValue("@LoserId", loserId);
                             cmd.ExecuteNonQuery();
                         }
 
@@ -450,7 +449,7 @@ namespace MonsterTradingCardsGame.logic
                             // Player 1 wins
                             player1.Elo += 3;
                             player1.gamesWon++;
-                            player2.Elo -= 1;
+                            player2.Elo -= 5;
                             player2.gamesLost++;
                             player1.Coins += 1; // Add a coin to the winner
                         }
@@ -459,7 +458,7 @@ namespace MonsterTradingCardsGame.logic
                             // Player 2 wins
                             player2.Elo += 3;
                             player2.gamesWon++;
-                            player1.Elo -= 1;
+                            player1.Elo -= 5;
                             player1.gamesLost++;
                             player2.Coins += 1; // Add a coin to the winner
                         }

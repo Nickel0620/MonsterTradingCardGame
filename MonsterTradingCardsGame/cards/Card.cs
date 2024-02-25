@@ -36,7 +36,7 @@ namespace MonsterTradingCardsGame.cards
         return $"[{Type}] {CardName} (ID: {CurlId}, Damage: {Damage})";
     }
 
-    // Method to set CardID - if necessary
+    
 }
 
 }
