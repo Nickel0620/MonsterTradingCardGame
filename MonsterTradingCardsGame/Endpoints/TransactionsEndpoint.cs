@@ -48,6 +48,11 @@ namespace MonsterTradingCardsGame.Endpoints
                         rs.ResponseCode = 201; // Created
                         rs.Content = "Package purchase successful!";
                     }
+                    else { 
+                    
+                        rs.ResponseCode = 404; // Internal Server Error
+                        rs.Content = "No Packages left!";
+                    }
      
                 }
                 else

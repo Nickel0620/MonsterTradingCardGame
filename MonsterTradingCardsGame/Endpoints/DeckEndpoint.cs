@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace MonsterTradingCardsGame.Endpoints
 {
@@ -37,8 +38,13 @@ namespace MonsterTradingCardsGame.Endpoints
                 {
                     var user = new UserCardManager(username);
                     var deck = user.GetUserDeck(username);
-
-                    if (deck != null)
+                    
+                    if (deck.Count != 4) { 
+                        rs.ResponseCode = 204; // Bad Request
+                        rs.Content = "Your deck is currently not configured!";
+                        return;
+                    }
+                    else if (deck != null)
                     {
                         rs.ResponseCode = 200; // OK
                         rs.Content = JsonSerializer.Serialize(deck);
@@ -79,7 +85,13 @@ namespace MonsterTradingCardsGame.Endpoints
                         {
                             rs.ResponseCode = 200; // OK
                             rs.Content = "User deck configuration successful!";
+                        } 
+                        else if(deck.Count != 4)
+                        {
+                            rs.ResponseCode = 400; // Bad Request
+                            rs.Content = "Not Enough Cards Selected!";
                         }
+
                         else
                         {
                             rs.ResponseCode = 400; // Bad Request

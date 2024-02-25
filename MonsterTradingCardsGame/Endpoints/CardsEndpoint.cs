@@ -26,9 +26,10 @@ namespace MonsterTradingCardsGame.Endpoints
         public void GetUserCards(HttpRequest rq, HttpResponse rs)
         {
 
-        try
+            try
             {
-                string username = ExtractUsername(rq.Headers["Authorization"]);
+                if (rq.Headers.ContainsKey("Authorization")) { 
+                    string username = ExtractUsername(rq.Headers["Authorization"]);
 
                 if (username != null)
                 {
@@ -49,8 +50,15 @@ namespace MonsterTradingCardsGame.Endpoints
                 else
                 {
                     rs.ResponseCode = 401; // Unauthorized
-                    rs.Content = "Unauthorized access!";
+                    rs.Content = "Unathorized!";
                 }
+            }
+                else
+                {
+                     rs.ResponseCode = 401; // Unauthorized
+                    rs.Content = "No Token";
+                }
+
             }
             catch (Exception)
             {
