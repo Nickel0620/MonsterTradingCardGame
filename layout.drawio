@@ -1,0 +1,187 @@
+<mxfile host="app.diagrams.net" modified="2024-02-25T12:08:23.379Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" etag="jSrH-4SG6ilXhapoOXiZ" version="23.1.6" type="device">
+  <diagram name="Seite-1" id="mm1hh5tV6iaJcO8NtJtf">
+    <mxGraphModel dx="2820" dy="2235" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-4" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="30" y="-250" width="460" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-1" value="" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-4">
+          <mxGeometry width="460" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-2" value="user" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-4">
+          <mxGeometry width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-13" value="" style="group" vertex="1" connectable="0" parent="KUPtz_h4TiJK-qAndPZa-4">
+          <mxGeometry x="10" y="30" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-3" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-13">
+          <mxGeometry width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-5" value="user.cs" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-13">
+          <mxGeometry width="54.54545454545455" height="24.705882352941174" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-11" value="Properties&lt;br&gt;&lt;br&gt;Constructor&lt;br&gt;&lt;br&gt;Method Buy Package (currently not in use)" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-13">
+          <mxGeometry y="24.705882352941174" width="200" height="98.8235294117647" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-26" value="" style="group" vertex="1" connectable="0" parent="KUPtz_h4TiJK-qAndPZa-4">
+          <mxGeometry x="10" y="190" width="180" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-23" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-26">
+          <mxGeometry width="180" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-24" value="UserManager.cs" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-26">
+          <mxGeometry x="20" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-25" value="DB connection&lt;br&gt;Constructor UserManager&lt;br&gt;Method Register&lt;br&gt;Method IsUsernameTaken&lt;br&gt;Method AddUserToDatabase&lt;br&gt;Method Login&lt;br&gt;Method GetUserFromDatabase&lt;br&gt;Method CreateUserFromReader&lt;br&gt;Method Edit User&lt;br&gt;Method UserStats&lt;br&gt;MethodGet Scores&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-26">
+          <mxGeometry y="30" width="180" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-21" value="" style="group" vertex="1" connectable="0" parent="KUPtz_h4TiJK-qAndPZa-4">
+          <mxGeometry x="230" y="50" width="130" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-14" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-21">
+          <mxGeometry width="130" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-15" value="PasswordHasher.cs" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-21">
+          <mxGeometry x="30" y="10" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-17" value="Method HashPassword&lt;br&gt;Method VerifyPassword" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-21">
+          <mxGeometry y="40" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-30" value="" style="group" vertex="1" connectable="0" parent="KUPtz_h4TiJK-qAndPZa-4">
+          <mxGeometry x="214" y="160" width="246" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-27" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-30">
+          <mxGeometry width="246" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-28" value="UserCardManager.cs" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-30">
+          <mxGeometry x="35.142857142857146" y="8.387096774193548" width="52.714285714285715" height="25.161290322580644" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-29" value="DB connection&lt;br&gt;Constructor&lt;br&gt;&lt;br&gt;Method &amp;lt;list&amp;gt; GetAllUserCards&lt;br&gt;Method GetUserIdByUsername&lt;br&gt;Method GetUserDeck&lt;br&gt;Method ConfigureDeck&lt;br&gt;Method GetUserCardIdByUserIdAndCurlId&lt;br&gt;Method Sell Card&lt;br&gt;Method DeleteSoldCard&lt;br&gt;Method CalculateCoinValue&lt;br&gt;Method UpdateUserCoins&lt;br&gt;Method GetUserCardId" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-30">
+          <mxGeometry y="33.54838709677419" width="246" height="192.90322580645162" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-52" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="-210" y="-290" width="120" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-48" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-52">
+          <mxGeometry width="120" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-49" value="Logic" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-52">
+          <mxGeometry width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-50" value="TradingDeal.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-52">
+          <mxGeometry y="40" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-51" value="Battle.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-52">
+          <mxGeometry y="90" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-53" value="Server" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="-780" y="100" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-66" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="-480" y="-210" width="170" height="790" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-54" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry width="170" height="790" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-55" value="Endpoints" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-56" value="BattleEndpoint.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="30" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-57" value="CardsEndpoint.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="100" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-58" value="DeckEndpoint.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="170" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-59" value="PackagesEndpoint.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-60" value="ScoreboardEndpoint.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="310" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-61" value="SessionsEndpoints.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="380" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-62" value="StatsEndpoint.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="460" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-63" value="TradingEndpoint.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="535" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-64" value="TransactionsEndpoint.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="610" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-65" value="UsersEndpont.cs" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-66">
+          <mxGeometry x="10" y="690" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-67" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="-90" y="280" width="530" height="490" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-31" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-67">
+          <mxGeometry x="10" width="520" height="490" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-32" value="cards" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-67">
+          <mxGeometry width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-36" value="" style="group" vertex="1" connectable="0" parent="KUPtz_h4TiJK-qAndPZa-67">
+          <mxGeometry x="20" y="40" width="90" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-33" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-36">
+          <mxGeometry width="90" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-34" value="Card.cs" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-36">
+          <mxGeometry x="10" y="5" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-35" value="Properties" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-36">
+          <mxGeometry y="35" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-39" value="" style="group" vertex="1" connectable="0" parent="KUPtz_h4TiJK-qAndPZa-67">
+          <mxGeometry x="20" y="140" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-37" value="Currently not in Use" style="rounded=1;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-39">
+          <mxGeometry width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-38" value="Package.cs" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-39">
+          <mxGeometry y="10" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-43" value="" style="group" vertex="1" connectable="0" parent="KUPtz_h4TiJK-qAndPZa-67">
+          <mxGeometry x="180" y="40" width="190" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-40" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-43">
+          <mxGeometry width="190" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-41" value="CurlPack.cs" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-43">
+          <mxGeometry x="20" y="10" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-42" value="DB Connection&lt;br&gt;Method &amp;lt;List&amp;gt; CreatePackage&lt;br&gt;Method AddCardToDatabase&lt;div&gt;Method DetermineCardAttriubute&lt;br&gt;&lt;/div&gt;&lt;div&gt;Method AddPackageToDatabse&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-43">
+          <mxGeometry y="50" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-47" value="" style="group" vertex="1" connectable="0" parent="KUPtz_h4TiJK-qAndPZa-67">
+          <mxGeometry x="170" y="240" width="180" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-44" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-47">
+          <mxGeometry width="180" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-45" value="BuyPackage.cs" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-47">
+          <mxGeometry x="30" y="10" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-46" value="DB Connection&lt;br&gt;Method FetchFirstPackage&lt;br&gt;Method AssignPackageToUser&lt;br&gt;Method HasEnoughCoins&lt;br&gt;Method DeductCoins&lt;br&gt;Method FetchUserId&lt;br&gt;Method AddCardsToUser&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="KUPtz_h4TiJK-qAndPZa-47">
+          <mxGeometry y="40" width="180" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-68" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.443;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="KUPtz_h4TiJK-qAndPZa-53" target="KUPtz_h4TiJK-qAndPZa-54">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-560" y="190" as="sourcePoint" />
+            <mxPoint x="-510" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="KUPtz_h4TiJK-qAndPZa-69" value="Handles Endpoints/Requests" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-660" y="110" width="140" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
